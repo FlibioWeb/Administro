@@ -1,0 +1,9 @@
+pages/
+config/users.yaml
+plugins/
+templates/
+style/
+gulpfile.js
+package.json
+*.log
+node_modules/
