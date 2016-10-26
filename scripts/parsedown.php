@@ -11,6 +11,13 @@
 # For the full license information, view the LICENSE file that was distributed
 # with this source code.
 #
+# This file is not original and was modified by Administro Contributors
+#
+# Adding custom inline elements:
+#
+# 1) Make sure marker is on list (inlineMarkerList)
+# 2) Associate the marker with the parser (InlineTypes)
+# 3) Write the parser (inlineColoredText)
 #
 
 class Parsedown
@@ -21,8 +28,11 @@ class Parsedown
 
     # ~
 
-    function text($text)
+    function text($text, $page = "")
     {
+        # Set global page variable
+        $GLOBALS["parsedownPage"] = $page;
+
         # make sure no definitions are set
         $this->DefinitionData = array();
 
@@ -1170,12 +1180,18 @@ class Parsedown
             return;
         }
 
+        $prefix = "";
+
+        if(isset($GLOBALS["parsedownPage"]) && !empty($GLOBALS["parsedownPage"])) {
+            $prefix = BASEPATH."pages/".$GLOBALS["parsedownPage"]."/files/";
+        }
+
         $Inline = array(
             'extent' => $Link['extent'] + 1,
             'element' => array(
                 'name' => 'img',
                 'attributes' => array(
-                    'src' => $Link['element']['attributes']['href'],
+                    'src' => $prefix.$Link['element']['attributes']['href'],
                     'alt' => $Link['element']['text'],
                 ),
             ),

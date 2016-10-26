@@ -65,7 +65,7 @@
                     // Load the content
                     $content = file_get_contents($baseDir."pages/$page/content.md");
                     // Parse the content
-                    $content = (new Parsedown)->text($content);
+                    $content = (new Parsedown)->text($content, $page);
                     // Setup variables
                     $variables = array("sitetitle" => ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH);
                     // Render page
