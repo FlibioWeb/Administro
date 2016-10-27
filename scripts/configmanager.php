@@ -2,25 +2,22 @@
 
     require_once "spyc.php";
 
-    $baseDir = dirname(__DIR__)."/";
-
     class ConfigManager {
 
         public static function getConfiguration() {
-            global $baseDir;
             // Create default options
             $defaultValues = array("name" => "My Website", "default-page" => "home");
             // Check if the config directory exists
-            if(!file_exists($baseDir."config")) {
-                mkdir($baseDir."config");
+            if(!file_exists(BASEDIR."config")) {
+                mkdir(BASEDIR."config");
             }
             $currentConfig = array();
             // Check if the config file exists
-            if(file_exists($baseDir."config/config.yaml")) {
-                $currentConfig = Spyc::YAMLLoad($baseDir."config/config.yaml");
+            if(file_exists(BASEDIR."config/config.yaml")) {
+                $currentConfig = Spyc::YAMLLoad(BASEDIR."config/config.yaml");
             } else {
                 // Generate a new config
-                file_put_contents($baseDir."config/config.yaml", "");
+                file_put_contents(BASEDIR."config/config.yaml", "");
             }
             // Set configuration values if they don't exist
             foreach($defaultValues as $option => $value) {
@@ -29,18 +26,17 @@
                 }
             }
 
-            file_put_contents($baseDir."config/config.yaml", Spyc::YAMLDump($currentConfig, false, false, true));
+            file_put_contents(BASEDIR."config/config.yaml", Spyc::YAMLDump($currentConfig, false, false, true));
 
             return $currentConfig;
         }
 
         public static function setConfigValue($key, $value) {
-            global $baseDir;
             // Load the current config
             $config = self::getConfiguration();
             // Set the new value
             $config[$key] = $value;
             // Save the file
-            file_put_contents($baseDir."config/config.yaml", Spyc::YAMLDump($config, false, false, true));
+            file_put_contents(BASEDIR."config/config.yaml", Spyc::YAMLDump($config, false, false, true));
         }
     }

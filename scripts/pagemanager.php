@@ -5,28 +5,25 @@
     require_once "configmanager.php";
     require_once "parsedown.php";
 
-    $baseDir = dirname(__DIR__)."/";
-
     class PageManager {
 
         private static $blacklist = array("admin", "login", "logout", "404");
 
         public static function getPages() {
-            global $baseDir;
             // Make folder if it does not exist
-            if(!is_dir($baseDir."pages")) {
-                mkdir($baseDir."pages");
+            if(!is_dir(BASEDIR."pages")) {
+                mkdir(BASEDIR."pages");
             }
             // Initialize array
             $pages = array();
             // Make sure data file exists
-            if(file_exists($baseDir."pages/data.yaml")) {
+            if(file_exists(BASEDIR."pages/data.yaml")) {
                 // Read the data file
-                $data = Spyc::YAMLLoad($baseDir."pages/data.yaml");
+                $data = Spyc::YAMLLoad(BASEDIR."pages/data.yaml");
                 // Loop through the data
                 foreach ($data as $page => $pageData) {
                     // Verify page data contains required fields and content exists
-                    if(file_exists($baseDir."pages/$page/content.md") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"])) {
+                    if(file_exists(BASEDIR."pages/$page/content.md") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"])) {
                         $pages[$page] = $pageData;
                     }
                 }
@@ -55,7 +52,6 @@
         }
 
         public static function renderPage($page) {
-            global $baseDir;
             // Attempt to load page data
             $pageData = self::getPage($page);
             if($pageData !== false) {
@@ -63,7 +59,7 @@
                 $template = TemplateManager::getTemplateContent($pageData["template"]);
                 if($template !== false) {
                     // Load the content
-                    $content = file_get_contents($baseDir."pages/$page/content.md");
+                    $content = file_get_contents(BASEDIR."pages/$page/content.md");
                     // Parse the content
                     $content = (new Parsedown)->text($content, $page);
                     // Setup variables
