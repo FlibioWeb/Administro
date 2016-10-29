@@ -35,3 +35,15 @@
         }
 
     }
+
+    class AdminRoute extends Route {
+
+        public function isValid($params) {
+            return (count($params) == 1 && $params[1] == "admin");
+        }
+
+        public function routeUser($params) {
+            return "admin";
+        }
+
+    }

@@ -8,6 +8,7 @@
     use \Administro\Page\PartialManager;
     use \Administro\Plugin\PluginManager;
     use \Administro\Route\RouteManager;
+    use \Administro\User\UserManager;
 
     final class Administro {
 
@@ -17,6 +18,7 @@
         var $partialmanager;
         var $pluginmanager;
         var $routemanager;
+        var $usermanager;
 
         // Construction
         private function __construct() {
@@ -26,6 +28,7 @@
             $this->partialmanager = new PartialManager;
             $this->pluginmanager = new PluginManager;
             $this->routemanager = new RouteManager;
+            $this->usermanager = new UserManager;
         }
 
         // Gets the Administro instance
