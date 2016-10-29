@@ -72,10 +72,10 @@
                         $template = str_ireplace("{{".$key."}}", $value, $template);
                     }
                     // Replace handlers
-                    $administro = Administro::Instance();
-                    foreach ($administro->handlers as $handler) {
-                        $template = str_ireplace("[[ ".$handler." ]]", $administro->callHandler($handler), $template);
-                        $template = str_ireplace("[[".$handler."]]", $administro->callHandler($handler), $template);
+                    $pluginmanager = Administro::Instance()->pluginmanager;
+                    foreach ($pluginmanager->handlers as $handler) {
+                        $template = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $template);
+                        $template = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $template);
                     }
                     // Return rendered page
                     return $template;
