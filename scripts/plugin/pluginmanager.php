@@ -10,6 +10,11 @@
         public function __construct() {
             $this->plugins = array();
             $this->handlers = array();
+
+            // Generate the plugins directory if it does not exist
+            if(!is_dir(BASEDIR."plugins")) {
+                mkdir(BASEDIR."plugins");
+            }
         }
 
         // Plugin Registration
