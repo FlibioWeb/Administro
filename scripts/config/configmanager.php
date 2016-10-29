@@ -1,10 +1,12 @@
 <?php
 
-    require_once "spyc.php";
+    namespace Administro\Config;
+
+    use \Administro\Lib\Spyc;
 
     class ConfigManager {
 
-        public static function getConfiguration() {
+        public function getConfiguration() {
             // Create default options
             $defaultValues = array("name" => "My Website", "default-page" => "home");
             // Check if the config directory exists
@@ -31,7 +33,7 @@
             return $currentConfig;
         }
 
-        public static function setConfigValue($key, $value) {
+        public function setConfigValue($key, $value) {
             // Load the current config
             $config = self::getConfiguration();
             // Set the new value

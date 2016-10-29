@@ -1,5 +1,7 @@
 <?php
 
+    namespace Administro\Page;
+
     class TemplateManager {
 
         public static function templateExists($template) {

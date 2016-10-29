@@ -1,6 +1,6 @@
 <?php
 
-    require_once BASEDIR."scripts/pagemanager.php";
+    use \Administro\Administro;
 
     $page = "404";
     
@@ -8,11 +8,11 @@
         $page = $GLOBALS["requestedPage"];
     }
 
-    $renderedPage = PageManager::renderPage($page);
+    $renderedPage = Administro::Instance()->pagemanager->renderPage($page);
 
     if($renderedPage === false) {
         // The page could not be found
-        echo "404 OH NO NOT THIS AGAIN!";
+        echo "404 Page not found!";
     } else {
         // Display the page
         echo $renderedPage;

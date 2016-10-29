@@ -1,5 +1,7 @@
 <?php
 
+namespace Administro\Lib;
+
 #
 #
 # Parsedown

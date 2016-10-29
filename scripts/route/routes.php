@@ -1,7 +1,8 @@
 <?php
 
-    require_once BASEDIR."scripts/pagemanager.php";
-    require_once BASEDIR."scripts/configmanager.php";
+    namespace Administro\Route;
+
+    use \Administro\Administro;
 
     abstract class Route {
 
@@ -22,20 +23,22 @@
             if(count($params) == 0) {
                 return true;
             }
-            if(count($params) == 1 && PageManager::pageExists($params[1])) {
+            if(count($params) == 1 && Administro::Instance()->pagemanager->pageExists($params[1])) {
                 return true;
             }
             return false;
         }
 
         public function routeUser($params) {
+            // Get ConfigManager
+            $configManager = Administro::Instance()->configmanager;
             // Load the page partial by default
             if(count($params) == 0) {
-                $GLOBALS["requestedPage"] = ConfigManager::getConfiguration()["default-page"];
+                $GLOBALS["requestedPage"] = $configManager->getConfiguration()["default-page"];
             }
             if(count($params) == 1) {
                 // Check if the page is the default page
-                if(ConfigManager::getConfiguration()["default-page"] == $params[1]) {
+                if($configManager->getConfiguration()["default-page"] == $params[1]) {
                     // Redirect the user to the base path
                     $this->redirect("");
                 }

@@ -1,9 +1,11 @@
 <?php
 
-    require_once "spyc.php";
-    require_once "templatemanager.php";
-    require_once "configmanager.php";
-    require_once "parsedown.php";
+    namespace Administro\Page;
+
+    use Administro\Lib;
+    use Administro\Page;
+    use Administro\Config;
+    use \Administro\Administro;
 
     class PageManager {
 
@@ -19,7 +21,7 @@
             // Make sure data file exists
             if(file_exists(BASEDIR."pages/data.yaml")) {
                 // Read the data file
-                $data = Spyc::YAMLLoad(BASEDIR."pages/data.yaml");
+                $data = \Administro\Lib\Spyc::YAMLLoad(BASEDIR."pages/data.yaml");
                 // Loop through the data
                 foreach ($data as $page => $pageData) {
                     // Verify page data contains required fields and content exists
@@ -61,14 +63,21 @@
                     // Load the content
                     $content = file_get_contents(BASEDIR."pages/$page/content.md");
                     // Parse the content
-                    $content = (new Parsedown)->text($content, $page);
+                    $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
-                    $variables = array("sitetitle" => ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH);
-                    // Render page
+                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH);
+                    // Replace variables
                     foreach ($variables as $key => $value) {
                         $template = str_ireplace("{{ ".$key." }}", $value, $template);
                         $template = str_ireplace("{{".$key."}}", $value, $template);
                     }
+                    // Replace handlers
+                    $administro = Administro::Instance();
+                    foreach ($administro->handlers as $handler) {
+                        $template = str_ireplace("[[ ".$handler." ]]", $administro->callHandler($handler), $template);
+                        $template = str_ireplace("[[".$handler."]]", $administro->callHandler($handler), $template);
+                    }
+                    // Return rendered page
                     return $template;
                 }
             }

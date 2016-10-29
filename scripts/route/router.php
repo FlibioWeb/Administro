@@ -1,6 +1,8 @@
 <?php
 
-    require_once BASEDIR."scripts/routes.php";
+    namespace Administro\Route;
+
+    use Administro\Route\Routes;
 
     class Router {
 
