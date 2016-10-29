@@ -4,19 +4,6 @@
 
     use \Administro\Administro;
 
-    abstract class Route {
-
-        function redirect($location) {
-            // Redirect the user
-            header("Location: ".BASEPATH.$location);
-            die("Redirecting...");
-        }
-
-        abstract function isValid($params);
-
-        abstract function routeUser($params);
-    }
-
     class PageRoute extends Route {
 
         public function isValid($params) {

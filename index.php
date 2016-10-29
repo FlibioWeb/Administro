@@ -1,5 +1,7 @@
 <?php
 
+    use \Administro\Administro;
+
     // Initialize the session if necessary
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -25,9 +27,4 @@
     }
 
     // Load the router
-    use \Administro\Route\Router;
-
-    $page = (new Router)->routeToPage();
-
-    // Load the requested page
-    require_once BASEDIR."partials/$page.php";
+    Administro::Instance()->routemanager->routeUser();

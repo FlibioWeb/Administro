@@ -17,5 +17,3 @@
         // Display the page
         echo $renderedPage;
     }
-
-?>
