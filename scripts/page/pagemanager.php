@@ -65,7 +65,9 @@
                     // Parse the content
                     $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
-                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH);
+                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
+                    unset($_SESSION["message-good"]);
+                    unset($_SESSION["message-bad"]);
                     // Replace variables
                     foreach ($variables as $key => $value) {
                         $template = str_ireplace("{{ ".$key." }}", $value, $template);

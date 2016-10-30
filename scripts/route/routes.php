@@ -81,8 +81,7 @@
 
         public function routeUser($params) {
             Administro::Instance()->usermanager->logout();
-            header("Location: ".BASEPATH);
-            die("Redirecting...");
+            $this->redirect("", "good/Successfully logged out!");
             return false;
         }
 
