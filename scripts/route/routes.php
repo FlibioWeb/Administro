@@ -52,7 +52,7 @@
     class AdminRoute extends Route {
 
         public function isValid($params) {
-            if(count($params > 0) && $params[1] == "admin") {
+            if(count($params) > 0 && $params[1] == "admin") {
                 // Get admin routes
                 $routes = Administro::Instance()->adminroutes->getAdminRoutes();
                 // Check if this is the home route
