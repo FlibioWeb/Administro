@@ -45,12 +45,18 @@
             Home
         </header>
         <main class="board">
-            <form class="updateForm" method="POST" action="<?php echo BASEPATH; ?>form/update">
-                <p><span class="title">Updates</span></p>
-                <input type="hidden" name="token" value="<?php echo $updateToken; ?>">
+            <section class="maintenance">
+                <header class="title">
+                    Maintenance
+                </header>
                 <p>Current Version: <?php echo $version; ?></p>
-                <?php if($updateAvailable) echo "<input type=\"submit\" value=\"Update Now\">"; ?>
-            </form>
+                <section class="bottom">
+                    <form class="form update" method="POST" action="<?php echo BASEPATH; ?>form/update">
+                        <input type="hidden" name="token" value="<?php echo $updateToken; ?>">
+                        <button type="submit" <?php if(!$updateAvailable) echo "style='display: none;'"; ?>><i class="fa fa-cloud-download"></i> Update</button>
+                    </form>
+                </section>
+            </section>
         </main>
     </main>
 </body>

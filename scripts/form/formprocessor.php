@@ -45,13 +45,19 @@
                     $params = FormUtils::verifyPostToken($_POST, "update");
 
                     if($params !== false) {
-                        // Download the update
-                        if($updater->downloadUpdate()) {
-                            // Success
-                            $this->redirect("admin", "good/Installed update!");
+                        // Check if an update is available
+                        if($updater->checkForUpdate()) {
+                            // Download the update
+                            if($updater->downloadUpdate()) {
+                                // Success
+                                $this->redirect("admin", "good/Installed update!");
+                            } else {
+                                // Update failed
+                                $this->redirect("admin", "bad/Failed to install update!");
+                            }
                         } else {
-                            // Update failed
-                            $this->redirect("admin", "bad/Failed to install update!");
+                            // No update available
+                            $this->redirect("admin", "bad/No update available!");
                         }
                     } else {
                         // Invalid parameters
