@@ -3,34 +3,30 @@
     use \Administro\Administro;
     use \Administro\Form\FormUtils;
 
+    // Load Administro
     $administro = Administro::Instance();
     $usermanager = $administro->usermanager;
-    $updater = $administro->updater;
+    $adminroutes = $administro->adminroutes;
+    $adminpartials = $administro->adminpartials;
+
+    // Load page data
+    $currentPage = $GLOBALS["AdministroAdminPage"];
+    $currentRoute = $adminroutes->getAdminRoute($currentPage);
 
     // Check if the user has permisison to continue
     if(!$usermanager->isLoggedIn()) {
         // Redirect to a login screen
         header("Location: ".BASEPATH."login");
         die("Redirecting...");
-    } else if(!$usermanager->hasPermission("admin.view")) {
+    } else if(!$usermanager->hasPermission("admin.".$currentPage)) {
         // Redirect to default page
         header("Location: ".BASEPATH);
         die("Redirecting...");
     }
 
-    // Set form tokens
-    $updateToken = FormUtils::generateToken("update");
-
-    $user = $usermanager->getUser()["display"];
+    // Display Variables
     $siteName = $administro->configmanager->getConfiguration()["name"];
-    // Administro Version
-    $version = "N/A";
-    $currentVersion = $updater->getCurrentVersion();
-    if($currentVersion !== false) {
-        $version = $currentVersion;
-    }
-    // Update Check
-    $updateAvailable = $updater->checkForUpdate();
+    $user = $usermanager->getUser()["display"];
 ?>
 <html>
     <title>Admin | <?php echo $siteName ?></title>
@@ -39,24 +35,35 @@
 </html>
 
 <body>
-    <?php require_once "nav.php"; ?>
+    <aside class="sidebar">
+        <header class="header">
+            Administration Panel
+        </header>
+        <section class="user">
+            Welcome, <?php echo $user; ?>
+            <p>
+            <a href="<?php echo BASEPATH; ?>logout"><i class="fa fa-sign-out"></i> Logout</a>
+        </section>
+        <nav class="nav">
+            <ul>
+                <?php
+                    // Display all admin pages
+                    foreach ($adminroutes->getAdminRoutes() as $name => $data) {
+                        echo "<li><a href=\"".BASEPATH."admin/$name\"><i class=\"fa fa-".$data["icon"]."\"></i> ".$data["display"]."</a></li>";
+                    }
+                ?>
+            </ul>
+        </nav>
+        <footer class="footer">
+            <a href="<?php echo BASEPATH; ?>"><i class="fa fa-angle-left"></i> Back to Site</a>
+        </footer>
+    </aside>
     <main class="main">
         <header class="header">
-            Home
+            <?php echo $currentRoute["display"]; ?>
         </header>
         <main class="board">
-            <section class="maintenance">
-                <header class="title">
-                    Maintenance
-                </header>
-                <p>Current Version: <?php echo $version; ?></p>
-                <section class="bottom">
-                    <form class="form update" method="POST" action="<?php echo BASEPATH; ?>form/update">
-                        <input type="hidden" name="token" value="<?php echo $updateToken; ?>">
-                        <button type="submit" <?php if(!$updateAvailable) echo "style='display: none;'"; ?>><i class="fa fa-cloud-download"></i> Update</button>
-                    </form>
-                </section>
-            </section>
+            <?php require_once $adminpartials->getPartial($currentRoute["partial"]); ?>
         </main>
     </main>
 </body>

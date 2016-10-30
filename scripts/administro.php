@@ -11,6 +11,8 @@
     use \Administro\User\UserManager;
     use \Administro\Form\FormProcessor;
     use \Administro\Update\Updater;
+    use \Administro\Admin\AdminPartials;
+    use \Administro\Admin\AdminRoutes;
 
     final class Administro {
 
@@ -23,6 +25,8 @@
         var $usermanager;
         var $formprocessor;
         var $updater;
+        var $adminpartials;
+        var $adminroutes;
 
         // Construction
         private function __construct() {
@@ -35,6 +39,8 @@
             $this->usermanager = new UserManager;
             $this->formprocessor = new FormProcessor;
             $this->updater = new Updater;
+            $this->adminpartials = new AdminPartials;
+            $this->adminroutes = new AdminRoutes;
         }
 
         // Gets the Administro instance

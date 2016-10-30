@@ -52,12 +52,44 @@
     class AdminRoute extends Route {
 
         public function isValid($params) {
-            // One route handles all admin routing
-            // Allows for custom routes to admin pages
-            return (count($params) == 1 && $params[1] == "admin");
+            if(count($params > 0) && $params[1] == "admin") {
+                // Get admin routes
+                $routes = Administro::Instance()->adminroutes->getAdminRoutes();
+                // Check if this is the home route
+                if(count($params) == 1) {
+                    return true;
+                } else {
+                    // Try the custom routes
+                    foreach ($routes as $name => $data) {
+                        // Verify the route is correct
+                        $pName = "";
+                        for ($i = 2; $i <= count($params); $i++) {
+                            $pName.=$params[$i];
+                        }
+                        // Compare the names
+                        if ($pName === $name) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+            return false;
         }
 
         public function routeUser($params) {
+            // Redirect to admin home if needed
+            if(count($params) == 1) {
+                $this->redirect("admin/home");
+            } else {
+                // Piece together the parameters
+                $name = "";
+                for ($i = 2; $i <= count($params); $i++) {
+                    $name.=$params[$i];
+                }
+                // Load the correct admin page
+                $GLOBALS["AdministroAdminPage"] = $name;
+            }
             return "admin";
         }
 
