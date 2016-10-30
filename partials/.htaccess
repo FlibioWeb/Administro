@@ -1,5 +1,5 @@
 deny from all
 
-<Files "main.css">
+<FilesMatch "\.(css)$">
     Allow from all
-</Files>
+</FilesMatch>
