@@ -2,7 +2,7 @@ pages/
 config/users.yaml
 plugins/
 templates/
-style/
+/style/
 gulpfile.js
 package.json
 *.log

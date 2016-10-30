@@ -1,0 +1,85 @@
+@import "mixins", "variables";
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
+@import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz');
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: $main-font;
+}
+.sidebar {
+    display: inline-block;
+    float: left;
+    min-height: 100%;
+    background-color: #455A64;
+    color: white;
+    & .header {
+        font-family: 'Yanone Kaffeesatz', sans-serif;
+        background-color: #607D8B;
+        font-size: 25px;
+        padding: 10px 20px;
+    }
+    & .footer {
+        position: absolute;
+        bottom: 0;
+        padding: 5px 20px;
+        font-size: 17px;
+        & a {
+            color: white;
+            text-decoration: none;
+        }
+    }
+    & .user {
+        padding: 5px 20px;
+        border-bottom: 1px solid white;
+        & p {
+            margin: 10px 0 0 0;
+        }
+        & a {
+            color: white;
+            text-decoration: none;
+        }
+    }
+    & .nav {
+        & ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            & li {
+                & a {
+                    color: white;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    display: block;
+                    font-size: 17px;
+                    & i {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+    }
+}
+.main {
+    overflow: hidden;
+    height: 100%;
+    & .header {
+        font-family: 'Yanone Kaffeesatz', sans-serif;
+        font-size: 25px;
+        padding: 10px 20px;
+        background-color: #1976D2;
+        color: white;
+        position: relative;
+    }
+    & .board {
+        height: 100%;
+        padding: 10px 20px;
+        background-color: #F5F5F5;
+        position: relative;
+    }
+}
+.good {
+    color: #388E3C;
+}
+.bad {
+    color: #D32F2F;
+}
