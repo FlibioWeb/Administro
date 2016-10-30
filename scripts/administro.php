@@ -10,6 +10,7 @@
     use \Administro\Route\RouteManager;
     use \Administro\User\UserManager;
     use \Administro\Form\FormProcessor;
+    use \Administro\Update\Updater;
 
     final class Administro {
 
@@ -21,6 +22,7 @@
         var $routemanager;
         var $usermanager;
         var $formprocessor;
+        var $updater;
 
         // Construction
         private function __construct() {
@@ -32,6 +34,7 @@
             $this->routemanager = new RouteManager;
             $this->usermanager = new UserManager;
             $this->formprocessor = new FormProcessor;
+            $this->updater = new Updater;
         }
 
         // Gets the Administro instance

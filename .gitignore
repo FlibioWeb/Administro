@@ -1,9 +1,9 @@
-pages/
-config/users.yaml
-plugins/
-templates/
+/pages/
+/config/
+/plugins/
+/templates/
 /style/
-gulpfile.js
-package.json
+/gulpfile.js
+/package.json
 *.log
-node_modules/
+/node_modules/

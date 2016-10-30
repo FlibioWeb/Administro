@@ -52,6 +52,8 @@
     class AdminRoute extends Route {
 
         public function isValid($params) {
+            // One route handles all admin routing
+            // Allows for custom routes to admin pages
             return (count($params) == 1 && $params[1] == "admin");
         }
 

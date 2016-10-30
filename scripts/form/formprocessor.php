@@ -8,6 +8,11 @@
 
         // Processes all forms
         public function processForm($formname, $post) {
+            // Administro variables
+            $administro = Administro::Instance();
+            $usermanager = $administro->usermanager;
+            $updater = $administro->updater;
+            // Switch on the form name
             switch ($formname) {
 
                 case 'login':
@@ -18,7 +23,7 @@
                         $password = $params["password"];
 
                         // Attempt to login
-                        if(Administro::Instance()->usermanager->login($username, $password)) {
+                        if($usermanager->login($username, $password)) {
                             // Success
                             $this->redirect("", "good/Logged in!");
                         } else {
@@ -28,6 +33,29 @@
                     } else {
                         // Invalid parameters
                         $this->redirect("login", "bad/Invalid parameters!");
+                    }
+                    break;
+
+                case 'update':
+                    // Verify permission
+                    if(!$usermanager->hasPermission("admin.update")) {
+                        // User can not do this
+                        redirect("", "bad/You do not have permission to do that!");
+                    }
+                    $params = FormUtils::verifyPostToken($_POST, "update");
+
+                    if($params !== false) {
+                        // Download the update
+                        if($updater->downloadUpdate()) {
+                            // Success
+                            $this->redirect("admin", "good/Installed update!");
+                        } else {
+                            // Update failed
+                            $this->redirect("admin", "bad/Failed to install update!");
+                        }
+                    } else {
+                        // Invalid parameters
+                        $this->redirect("admin", "bad/Invalid parameters!");
                     }
                     break;
 
