@@ -36,6 +36,19 @@
 
     }
 
+    class FormRoute extends Route {
+
+        public function isValid($params) {
+            return (isset($GLOBALS["AdministroPost"]) && count($params) == 2 && $params[1] == "form");
+        }
+
+        public function routeUser($params) {
+            Administro::Instance()->formprocessor->processForm($params[2], $GLOBALS["AdministroPost"]);
+            return false;
+        }
+
+    }
+
     class AdminRoute extends Route {
 
         public function isValid($params) {
@@ -44,6 +57,33 @@
 
         public function routeUser($params) {
             return "admin";
+        }
+
+    }
+
+    class LoginRoute extends Route {
+
+        public function isValid($params) {
+            return (count($params) == 1 && $params[1] == "login");
+        }
+
+        public function routeUser($params) {
+            return "login";
+        }
+
+    }
+
+    class LogoutRoute extends Route {
+
+        public function isValid($params) {
+            return (count($params) == 1 && $params[1] == "logout");
+        }
+
+        public function routeUser($params) {
+            Administro::Instance()->usermanager->logout();
+            header("Location: ".BASEPATH);
+            die("Redirecting...");
+            return false;
         }
 
     }

@@ -12,6 +12,11 @@
         die("<b>Notice: </b>Administro requires PHP version 5.5 or greater! You are running version ".phpversion()."!");
     }
 
+    // Accept post data if it set
+    if(isset($_POST)) {
+        $GLOBALS["AdministroPost"] = $_POST;
+    }
+
     // Define base variables
     define('BASEDIR', __DIR__."/");
     define('BASEPATH', implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/');

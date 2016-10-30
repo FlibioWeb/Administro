@@ -9,7 +9,7 @@
         public function __construct() {
             // Initialize the array
             $p = BASEDIR."partials/";
-            $this->partials = array("page" => $p."page.php", "admin" => $p."admin/admin.php");
+            $this->partials = array("page" => $p."page.php", "admin" => $p."admin/admin.php", "login" => $p."login.php");
         }
 
         // Registers a new partial

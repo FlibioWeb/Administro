@@ -9,7 +9,7 @@
 
     class PageManager {
 
-        private static $blacklist = array("admin", "404");
+        private static $blacklist = array("admin", "form");
 
         public static function getPages() {
             // Make folder if it does not exist

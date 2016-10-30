@@ -9,6 +9,7 @@
     use \Administro\Plugin\PluginManager;
     use \Administro\Route\RouteManager;
     use \Administro\User\UserManager;
+    use \Administro\Form\FormProcessor;
 
     final class Administro {
 
@@ -19,6 +20,7 @@
         var $pluginmanager;
         var $routemanager;
         var $usermanager;
+        var $formprocessor;
 
         // Construction
         private function __construct() {
@@ -29,6 +31,7 @@
             $this->pluginmanager = new PluginManager;
             $this->routemanager = new RouteManager;
             $this->usermanager = new UserManager;
+            $this->formprocessor = new FormProcessor;
         }
 
         // Gets the Administro instance

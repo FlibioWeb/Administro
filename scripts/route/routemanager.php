@@ -9,7 +9,7 @@
         private $routes;
 
         public function __construct() {
-            $this->routes = array(new PageRoute, new AdminRoute);
+            $this->routes = array(new FormRoute, new PageRoute, new AdminRoute, new LoginRoute, new LogoutRoute);
         }
 
         // Registers a new route.
