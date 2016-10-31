@@ -2,10 +2,12 @@
 
     namespace Administro\Page;
 
-    use Administro\Lib;
-    use Administro\Page;
-    use Administro\Config;
+    use \Administro\Lib;
+    use \Administro\Page;
+    use \Administro\Config;
     use \Administro\Administro;
+
+    require_once BASEDIR."vendor/twig/lib/Twig/Autoloader.php";
 
     class PageManager {
 
@@ -57,30 +59,38 @@
             // Attempt to load page data
             $pageData = self::getPage($page);
             if($pageData !== false) {
-                // Attempt to load template
-                $template = TemplateManager::getTemplateContent($pageData["template"]);
-                if($template !== false) {
+                // Make sure template exists
+                if(TemplateManager::templateExists($pageData["template"])) {
                     // Load the content
                     $content = file_get_contents(BASEDIR."pages/$page/content.md");
                     // Parse the content
                     $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
-                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "content" => $content, "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
+                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
                     unset($_SESSION["message-good"]);
                     unset($_SESSION["message-bad"]);
                     // Replace variables
                     foreach ($variables as $key => $value) {
-                        $template = str_ireplace("{{ ".$key." }}", $value, $template);
-                        $template = str_ireplace("{{".$key."}}", $value, $template);
+                        $content = str_ireplace("{{ ".$key." }}", $value, $content);
+                        $content = str_ireplace("{{".$key."}}", $value, $content);
                     }
                     // Replace handlers
                     $pluginmanager = Administro::Instance()->pluginmanager;
                     foreach ($pluginmanager->handlers as $handler) {
-                        $template = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $template);
-                        $template = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $template);
+                        $content = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $content);
+                        $content = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $content);
                     }
-                    // Return rendered page
-                    return $template;
+                    // Push content variable
+                    $variables["content"] = $content;
+                    // Setup Twig
+                    \Twig_Autoloader::register();
+                    $loader = new \Twig_Loader_Filesystem(BASEDIR."templates");
+                    $twig = new \Twig_Environment($loader, array(
+                        'cache' => BASEDIR."cache/twig",
+                        'autoescape' => false,
+                    ));
+                    // Render the page
+                    return $twig->render($pageData["template"].".html.twig", $variables);
                 }
             }
             return false;

@@ -3,6 +3,7 @@
     namespace Administro\Form;
 
     use \Administro\Administro;
+    use \Administro\Config\FileUtils;
 
     class FormProcessor {
 
@@ -64,6 +65,28 @@
                         $this->redirect("admin", "bad/Invalid parameters!");
                     }
                     break;
+
+                case 'clearcache':
+                    // Verify permission
+                    if(!$usermanager->hasPermission("admin.clearcache")) {
+                        // User can not do this
+                        redirect("", "bad/You do not have permission to do that!");
+                    }
+                    $params = FormUtils::verifyPostToken($_POST, "clearcache");
+
+                    if($params !== false) {
+                        // Clear Twig cache
+                        @FileUtils::deleteFolder(BASEDIR."cache");
+                        // Clear update cache
+                        $updater->clearCache();
+                        // Success
+                        $this->redirect("admin", "good/Cleared cache!");
+                    } else {
+                        // Invalid parameters
+                        $this->redirect("admin", "bad/Invalid parameters!");
+                    }
+                    break;
+
 
                 default:
                     // Redirect to default page

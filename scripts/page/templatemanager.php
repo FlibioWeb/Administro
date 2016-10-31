@@ -10,16 +10,7 @@
                 mkdir(BASEDIR."templates");
             }
             // Check if the template exists
-            return file_exists(BASEDIR."templates/$template.html");
-        }
-
-        public static function getTemplateContent($template) {
-            // Make sure the template exists
-            if(self::templateExists($template)) {
-                // Load the template
-                return file_get_contents(BASEDIR."templates/$template.html");
-            }
-            return false;
+            return file_exists(BASEDIR."templates/$template.html.twig");
         }
 
     }

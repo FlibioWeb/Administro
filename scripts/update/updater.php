@@ -63,6 +63,19 @@
             return false;
         }
 
+        // Clears the update cache
+        public function clearCache() {
+            global $updateFile;
+            // Check if cache data exists
+            if($this->hasCacheData()) {
+                // Clear the cache
+                $data = json_decode(file_get_contents($updateFile), true);
+                unset($data["cache"]);
+                // Save the file
+                file_put_contents($updateFile, json_encode($data));
+            }
+        }
+
         // Installs an update
         private function installUpdate($latest) {
             global $context;
