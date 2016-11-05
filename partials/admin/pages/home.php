@@ -17,7 +17,7 @@
     // Update Check
     $updateAvailable = $updater->checkForUpdate();
 ?>
-<section class="maintenance">
+<section class="floating-box maintenance">
     <header class="title">
         Maintenance
     </header>

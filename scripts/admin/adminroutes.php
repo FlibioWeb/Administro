@@ -7,31 +7,66 @@
         var $routes;
 
         public function __construct() {
-            $this->routes = array();
-            // Home Route
-            $this->routes["home"]["icon"] = "home";
-            $this->routes["home"]["partial"] = "home";
-            $this->routes["home"]["display"] = "Home";
-            // Pages Route
-            $this->routes["pages"]["icon"] = "file-text";
-            $this->routes["pages"]["partial"] = "pages";
-            $this->routes["pages"]["display"] = "Pages";
+            $this->routes = array(new HomeRoute, new PagesRoute);
         }
 
-        // Adds an admin route, using an FA icon, display name, and an admin partial.
-        public function addAdminRoute($name, $icon, $display, $partial) {
-            $this->routes[$name]["icon"] = $icon;
-            $this->routes[$name]["partial"] = $partial;
-            $this->routes[$name]["display"] = $display;
-        }
-
-        // Gets one admin route.
-        public function getAdminRoute($name) {
-            return $this->routes[$name];
+        // Adds an admin route.
+        public function addAdminRoute($route) {
+            array_push($this->routes, $route);
         }
 
         // Gets all admin routes.
         public function getAdminRoutes() {
             return $this->routes;
         }
+    }
+
+    /* All default admin routes */
+
+    class HomeRoute extends AdminRoute {
+
+        function isVisible() {
+            return true;
+        }
+
+        function getIcon() {
+            return "home";
+        }
+
+        function getName() {
+            return "Home";
+        }
+
+        function getPartial() {
+            return "home";
+        }
+
+        function isValid($params) {
+            return (count($params) == 1 && $params[0] == "home");
+        }
+
+    }
+
+    class PagesRoute extends AdminRoute {
+
+        function isVisible() {
+            return true;
+        }
+
+        function getIcon() {
+            return "file-text";
+        }
+
+        function getName() {
+            return "Pages";
+        }
+
+        function getPartial() {
+            return "pages";
+        }
+
+        function isValid($params) {
+            return (count($params) == 1 && $params[0] == "pages");
+        }
+
     }

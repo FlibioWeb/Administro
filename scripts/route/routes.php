@@ -59,15 +59,14 @@
                 if(count($params) == 1) {
                     return true;
                 } else {
-                    // Try the custom routes
-                    foreach ($routes as $name => $data) {
-                        // Verify the route is correct
-                        $pName = "";
-                        for ($i = 2; $i <= count($params); $i++) {
-                            $pName.=$params[$i];
-                        }
-                        // Compare the names
-                        if ($pName === $name) {
+                    // Try the other routes
+                    foreach ($routes as $route) {
+                        $newParams = $params;
+                        array_splice($newParams, 0, 1);
+                        // Check if the route is good.
+                        if($route->isValid($newParams)) {
+                            // Set the route.
+                            $GLOBALS["AdministroAdminRoute"] = $route;
                             return true;
                         }
                     }
@@ -82,13 +81,9 @@
             if(count($params) == 1) {
                 $this->redirect("admin/home");
             } else {
-                // Piece together the parameters
-                $name = "";
-                for ($i = 2; $i <= count($params); $i++) {
-                    $name.=$params[$i];
-                }
+                $route = $GLOBALS["AdministroAdminRoute"];
                 // Load the correct admin page
-                $GLOBALS["AdministroAdminPage"] = $name;
+                $GLOBALS["AdministroAdminPage"] = $route->getPartial();
             }
             return "admin";
         }

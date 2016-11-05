@@ -11,7 +11,7 @@
 
     // Load page data
     $currentPage = $GLOBALS["AdministroAdminPage"];
-    $currentRoute = $adminroutes->getAdminRoute($currentPage);
+    $currentRoute = $GLOBALS["AdministroAdminRoute"];
 
     // Check if the user has permisison to continue
     if(!$usermanager->isLoggedIn()) {
@@ -48,8 +48,10 @@
             <ul>
                 <?php
                     // Display all admin pages
-                    foreach ($adminroutes->getAdminRoutes() as $name => $data) {
-                        echo "<li><a href=\"".BASEPATH."admin/$name\"><i class=\"fa fa-".$data["icon"]."\"></i> ".$data["display"]."</a></li>";
+                    foreach ($adminroutes->getAdminRoutes() as $route) {
+                        if($route->isVisible()) {
+                            echo "<li><a href=\"".BASEPATH."admin/".$route->getPartial()."\"><i class=\"fa fa-".$route->getIcon()."\"></i> ".$route->getName()."</a></li>";
+                        }
                     }
                 ?>
             </ul>
@@ -60,10 +62,10 @@
     </aside>
     <main class="main">
         <header class="header">
-            <?php echo $currentRoute["display"]; ?>
+            <?php echo $currentRoute->getName(); ?>
         </header>
         <main class="board">
-            <?php require_once $adminpartials->getPartial($currentRoute["partial"]); ?>
+            <?php require_once $adminpartials->getPartial($currentPage); ?>
         </main>
     </main>
 </body>
