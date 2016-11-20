@@ -28,11 +28,11 @@
     $siteName = $administro->configmanager->getConfiguration()["name"];
     $user = $usermanager->getUser()["display"];
 ?>
-<html>
+<head>
     <title>Admin | <?php echo $siteName ?></title>
     <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>partials/style/admin.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-</html>
+</head>
 
 <body>
     <aside class="sidebar">

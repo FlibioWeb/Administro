@@ -67,6 +67,10 @@
                         if($route->isValid($newParams)) {
                             // Set the route.
                             $GLOBALS["AdministroAdminRoute"] = $route;
+                            // Get new parameters
+                            $pageParams = $newParams;
+                            array_splice($pageParams, 0, 1);
+                            $GLOBALS["AdministroAdminParams"] = $pageParams;
                             return true;
                         }
                     }

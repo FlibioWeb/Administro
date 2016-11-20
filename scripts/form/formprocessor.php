@@ -12,12 +12,27 @@
             // Administro variables
             $administro = Administro::Instance();
             $usermanager = $administro->usermanager;
+            $pagemanager = $administro->pagemanager;
             $updater = $administro->updater;
             // Switch on the form name
             switch ($formname) {
 
+                case 'parsemarkdown':
+                    $params = FormUtils::getParametersWithToken(array("page", "content"), $post, "parsemarkdown", false);
+
+                    if($params != false) {
+                        $page = $params["page"];
+
+                        echo $pagemanager->renderPage($page, $params["content"]);
+                        die();
+                    } else {
+                        // Invalid parameters
+                        die("Error rendering page!");
+                    }
+                    break;
+
                 case 'login':
-                    $params = FormUtils::getParametersWithToken(array("username", "password"), $_POST, "login");
+                    $params = FormUtils::getParametersWithToken(array("username", "password"), $post, "login");
 
                     if($params != false) {
                         $username = $params["username"];
@@ -43,7 +58,7 @@
                         // User can not do this
                         redirect("", "bad/You do not have permission to do that!");
                     }
-                    $params = FormUtils::verifyPostToken($_POST, "update");
+                    $params = FormUtils::verifyPostToken($post, "update");
 
                     if($params !== false) {
                         // Check if an update is available
@@ -72,7 +87,7 @@
                         // User can not do this
                         redirect("", "bad/You do not have permission to do that!");
                     }
-                    $params = FormUtils::verifyPostToken($_POST, "clearcache");
+                    $params = FormUtils::verifyPostToken($post, "clearcache");
 
                     if($params !== false) {
                         // Clear Twig cache
@@ -92,6 +107,7 @@
                     // Redirect to default page
                     $this->redirect("");
                     break;
+
             }
         }
 

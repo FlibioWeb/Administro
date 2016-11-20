@@ -2,12 +2,14 @@
 
     namespace Administro\Admin;
 
+    use \Administro\Administro;
+
     class AdminRoutes {
 
         var $routes;
 
         public function __construct() {
-            $this->routes = array(new HomeRoute, new PagesRoute);
+            $this->routes = array(new HomeRoute, new PagesRoute, new PageRoute);
         }
 
         // Adds an admin route.
@@ -67,6 +69,30 @@
 
         function isValid($params) {
             return (count($params) == 1 && $params[0] == "pages");
+        }
+
+    }
+
+    class PageRoute extends AdminRoute {
+
+        function isVisible() {
+            return false;
+        }
+
+        function getIcon() {
+            return false;
+        }
+
+        function getName() {
+            return "Page";
+        }
+
+        function getPartial() {
+            return "page";
+        }
+
+        function isValid($params) {
+            return (count($params) == 2 && $params[0] == "pages" && Administro::Instance()->pagemanager->pageExists($params[1]));
         }
 
     }

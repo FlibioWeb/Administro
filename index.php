@@ -16,7 +16,7 @@
     define('BASEDIR', __DIR__."/");
     define('BASEPATH', implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/');
 
-    // Accept post data if it set
+    // Accept post data if it is set
     if(isset($_POST)) {
         $GLOBALS["AdministroPost"] = $_POST;
     }

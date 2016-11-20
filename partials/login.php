@@ -22,10 +22,10 @@
     // Generate a form token
     $token = FormUtils::generateToken("login");
 ?>
-<html>
+<head>
     <title>Login | <?php echo $title; ?></title>
     <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>partials/style/main.css">
-</html>
+</head>
 <body>
     <h3><?php echo $title; ?> Login</h3>
     <p>

@@ -55,14 +55,26 @@
             return false;
         }
 
-        public static function renderPage($page) {
+        public static function getPageContent($page) {
+            // Attempt to load page data
+            $pageData = self::getPage($page);
+            if($pageData !== false) {
+                return file_get_contents(BASEDIR."pages/$page/content.md");
+            }
+        }
+
+        public static function renderPage($page, $forcedContent = false) {
             // Attempt to load page data
             $pageData = self::getPage($page);
             if($pageData !== false) {
                 // Make sure template exists
                 if(TemplateManager::templateExists($pageData["template"])) {
                     // Load the content
-                    $content = file_get_contents(BASEDIR."pages/$page/content.md");
+                    if($forcedContent === false) {
+                        $content = file_get_contents(BASEDIR."pages/$page/content.md");
+                    } else {
+                        $content = $forcedContent;
+                    }
                     // Parse the content
                     $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
