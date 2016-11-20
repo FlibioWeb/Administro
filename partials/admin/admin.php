@@ -67,5 +67,30 @@
         <main class="board">
             <?php require_once $adminpartials->getPartial($currentPage); ?>
         </main>
+        <section id="message" class="message"></section>
     </main>
 </body>
+<script>
+    function displayMessage(type, content) {
+        var message = document.getElementById("message");
+        if(!message.innerHTML == "") return;
+        // Load the message
+        message.innerHTML = content;
+        // Set the type
+        if(type) {
+            message.className += " good";
+        } else {
+            message.className += " bad";
+        }
+        message.style.opacity = 1;
+        // Start exit transition
+        setTimeout(function(){
+            message.style.opacity = 0;
+        }, 4000);
+        // Clear the message
+        setTimeout(function(){
+            message.innerHTML = "";
+            message.className = "message";
+        }, 4500);
+    }
+</script>

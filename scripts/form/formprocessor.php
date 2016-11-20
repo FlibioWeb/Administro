@@ -31,6 +31,25 @@
                     }
                     break;
 
+                case 'savepage':
+                    // Verify permission
+                    if(!$usermanager->hasPermission("admin.savepage")) {
+                        // User can not do this
+                        redirect("", "bad/You do not have permission to do that!");
+                    }
+                    // Get parameters
+                    $params = FormUtils::getParametersWithToken(array("page", "content"), $post, "savepage", false);
+
+                    if($params != false) {
+                        $page = $params["page"];
+
+                        die($pagemanager->savePageContent($page, $params["content"]));
+                    } else {
+                        // Invalid parameters
+                        die(false);
+                    }
+                    break;
+
                 case 'login':
                     $params = FormUtils::getParametersWithToken(array("username", "password"), $post, "login");
 

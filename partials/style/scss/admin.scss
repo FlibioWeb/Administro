@@ -95,11 +95,7 @@ body, html {
                         font-size: 17px;
                         border-radius: 4px;
                         box-shadow: none;
-                        -webkit-transition: box-shadow .5s;
-                        -moz-transition: box-shadow .5s;
-                        -ms-transition: box-shadow .5s;
-                        -o-transition: box-shadow .5s;
-                        transition: box-shadow .5s;
+                        @include transition(box-shadow, .5s);
                         &:hover {
                             cursor: pointer;
                             box-shadow: inset 0 0 0 5px #38718C;
@@ -138,14 +134,37 @@ body, html {
         }
     }
 }
+.page {
+    background-color: #EEEEEE;
+    & .editor {
+        margin-top: 10px;
+        max-height: 100%;
+    }
+}
+.message {
+    position: fixed;
+    z-index: 10;
+    background-color: #2196F3;
+    color: white;
+    bottom: 3%;
+    right: 3%;
+    padding: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    opacity: 0;
+    @include bottomShadow(20px, .31);
+    @include transition(opacity, .5s);
+    &:hover {
+        cursor: pointer;
+    }
+    &.bad {
+        background-color: #D32F2F;
+    }
+    &.good {
+        background-color: #388E3C;
+    }
+}
 .form {
     & .title {
         font-weight: 700;
     }
-}
-.good {
-    color: #388E3C;
-}
-.bad {
-    color: #D32F2F;
 }

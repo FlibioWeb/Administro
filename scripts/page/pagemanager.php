@@ -61,6 +61,17 @@
             if($pageData !== false) {
                 return file_get_contents(BASEDIR."pages/$page/content.md");
             }
+            return false;
+        }
+
+        public static function savePageContent($page, $content) {
+            // Make sure the page exists
+            if(self::pageExists($page)) {
+                // Save the file
+                file_put_contents(BASEDIR."pages/$page/content.md", $content);
+                return true;
+            }
+            return false;
         }
 
         public static function renderPage($page, $forcedContent = false) {
