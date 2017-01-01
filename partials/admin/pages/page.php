@@ -10,18 +10,37 @@
     $parseToken = FormUtils::generateToken("parsemarkdown");
     $saveToken = FormUtils::generateToken("savepage");
 
+    // Load all page files
+    $imgFiles = "";
+    $otherFiles = "";
+    foreach ($pagemanager->getPageFiles($page) as $file) {
+        // Check if the file is an image
+        $link = $pagemanager->getFileLink($page, $file);
+        $prefix = BASEPATH."pages/$page/files/";
+        if(@is_array(getimagesize($link))){
+            // The file is an image
+            $imgFiles.="<img title='$file' src='$prefix$file'></img>";
+        } else {
+            // The file is not an image
+            $otherFiles.="<a href='$prefix$file'>$file</a> | ";
+        }
+    }
+    $otherFiles = substr($otherFiles, 0, strlen($otherFiles) - 3);
 ?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 <section class="floating-box page">
     <header class="title">
-        <header>Edit Page: <?php echo $pageData["display"]; ?></header>
-        <nav>
-
-        </nav>
+        Edit Page: <?php echo $pageData["display"]; ?>
     </header>
     <section class="editor">
         <textarea id="editor"><?php echo $pagemanager->getPageContent($page); ?></textarea>
+    </section>
+    <section class="files">
+        <header class="title sub">Image Files</header>
+        <?php echo $imgFiles; ?>
+        <header class="title sub">Other Files</header>
+        <?php echo $otherFiles; ?>
     </section>
 </section>
 <script>
@@ -44,10 +63,25 @@
             xmlhttp.send(params);
             return cached;
         },
+        status: ["lines", "words"],
         toolbar: ["bold", "italic", "heading", "|",
             "quote", "unordered-list", "ordered-list", "|",
             "link", "image", "table", "|",
-            "preview", "side-by-side", "fullscreen", "|",
+            "preview", "side-by-side", {
+                name: "fullscreen",
+                action: function fullscreen(editor){
+                    SimpleMDE.toggleFullScreen(editor);
+                    if(simplemde.isFullscreenActive()) {
+                        // Fix the CodeMirror style
+                        document.getElementsByClassName("CodeMirror-scroll")[0].style.height = "100%";
+                    } else {
+                        // Apply the custom CodeMirror style
+                        document.getElementsByClassName("CodeMirror-scroll")[0].style.height = "auto";
+                    }
+                },
+                className: "fa fa-arrows-alt no-disable no-mobile",
+                title: "Toggle Fullscreen (F11)",
+            }, "|",
             {
                 name: "save",
                 action: function savePage(editor){

@@ -27,7 +27,7 @@
                 // Loop through the data
                 foreach ($data as $page => $pageData) {
                     // Verify page data contains required fields and content exists
-                    if(file_exists(BASEDIR."pages/$page/content.md") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"])) {
+                    if(file_exists(BASEDIR."pages/$page/content.md") && is_dir(BASEDIR."pages/$page/files") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"])) {
                         $pages[$page] = $pageData;
                     }
                 }
@@ -53,6 +53,25 @@
                 return $pages[$page];
             }
             return false;
+        }
+
+        public static function getPageFiles($page) {
+            // Make sure the page exists
+            if(self::pageExists($page)) {
+                // Load all files
+                $files = array();
+                foreach (scandir(BASEDIR."pages/$page/files") as $file) {
+                    if($file != "." && $file != ".." && !is_dir(BASEDIR."pages/$page/files/$file")) {
+                        array_push($files, $file);
+                    }
+                }
+                return $files;
+            }
+            return false;
+        }
+
+        public static function getFileLink($page, $file) {
+            return BASEDIR."pages/$page/files/$file";
         }
 
         public static function getPageContent($page) {
