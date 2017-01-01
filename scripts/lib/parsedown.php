@@ -527,10 +527,10 @@ class Parsedown
                 ),
             );
 
-            if($name === 'ol') 
+            if($name === 'ol')
             {
                 $listStart = stristr($matches[0], '.', true);
-                
+
                 if($listStart !== '1')
                 {
                     $Block['element']['attributes'] = array('start' => $listStart);
@@ -1273,6 +1273,12 @@ class Parsedown
 
         $Element['attributes']['href'] = str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']);
 
+        $newLink = $Element['attributes']['href'];
+        if(strlen($newLink) >= 2 && substr($newLink, 0, 2) == "::") {
+            // Prepend the relative path
+            $Element['attributes']['href'] = BASEPATH.substr($newLink, 2);
+        }
+
         return array(
             'extent' => $extent,
             'element' => $Element,
@@ -1361,14 +1367,19 @@ class Parsedown
 
         if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
         {
+            $newLink = $matches[0][0];
+            if(strlen($newLink) >= 2 && substr($newLink, 0, 2) == "::") {
+                // Prepend the relative path
+                $newLink = BASEDIR.substr($newLink, 2);
+            }
             $Inline = array(
                 'extent' => strlen($matches[0][0]),
                 'position' => $matches[0][1],
                 'element' => array(
                     'name' => 'a',
-                    'text' => $matches[0][0],
+                    'text' => $newLink,
                     'attributes' => array(
-                        'href' => $matches[0][0],
+                        'href' => $newLink,
                     ),
                 ),
             );
@@ -1382,14 +1393,18 @@ class Parsedown
         if (strpos($Excerpt['text'], '>') !== false and preg_match('/^<(\w+:\/{2}[^ >]+)>/i', $Excerpt['text'], $matches))
         {
             $url = str_replace(array('&', '<'), array('&amp;', '&lt;'), $matches[1]);
-
+            $newLink = $url;
+            if(strlen($newLink) >= 2 && substr($newLink, 0, 2) == "::") {
+                // Prepend the relative path
+                $newLink = BASEDIR.substr($newLink, 2);
+            }
             return array(
                 'extent' => strlen($matches[0]),
                 'element' => array(
                     'name' => 'a',
-                    'text' => $url,
+                    'text' => $newLink,
                     'attributes' => array(
-                        'href' => $url,
+                        'href' => $newLink,
                     ),
                 ),
             );

@@ -153,6 +153,13 @@ body, html {
     }
     & .files {
         margin-top: 10px;
+        & hr {
+            margin: 20px 0;
+        }
+        & header {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
         & img {
             height: 24%;
             margin: .5%;

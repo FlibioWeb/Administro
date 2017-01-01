@@ -24,6 +24,12 @@
         die("Redirecting...");
     }
 
+    // Load messages
+    $good = (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : "");
+    unset($_SESSION["message-good"]);
+    $bad = (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : "");
+    unset($_SESSION["message-bad"]);
+
     // Display Variables
     $siteName = $administro->configmanager->getConfiguration()["name"];
     $user = $usermanager->getUser()["display"];
@@ -73,7 +79,7 @@
 <script>
     function displayMessage(type, content) {
         var message = document.getElementById("message");
-        if(!message.innerHTML == "") return;
+        if(content == "" || !message.innerHTML == "") return;
         // Load the message
         message.innerHTML = content;
         // Set the type
@@ -86,11 +92,14 @@
         // Start exit transition
         setTimeout(function(){
             message.style.opacity = 0;
-        }, 4000);
+        }, 3000);
         // Clear the message
         setTimeout(function(){
             message.innerHTML = "";
             message.className = "message";
-        }, 4500);
+        }, 3500);
     }
+    // Display loaded message
+    displayMessage(true, <?php echo json_encode($good, JSON_HEX_TAG); ?>);
+    displayMessage(false, <?php echo json_encode($bad, JSON_HEX_TAG); ?>);
 </script>

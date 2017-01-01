@@ -50,6 +50,41 @@
                     }
                     break;
 
+                case 'uploadfile':
+                    // Verify permission
+                    if(!$usermanager->hasPermission("admin.uploadfile")) {
+                        // User can not do this
+                        $this->redirect("admin", "bad/Invalid parameters!");
+                    }
+                    // Verify parameters
+                    if(!isset($post["page"], $post["token"], $post["submit"])) {
+                        // Invalid parameters
+                        $this->redirect("admin", "bad/Invalid parameters!");
+                    }
+                    $page = $post["page"];
+                    // Verify token
+                    if(!FormUtils::verifyToken("uploadfile", $post["token"])) {
+                        // Invalid token
+                        $this->redirect("admin/pages/$page", "bad/Invalid token!");
+                    }
+                    $target_dir = BASEDIR."pages/$page/files/";
+                    $target_file = $target_dir . basename($_FILES["toUpload"]["name"]);
+                    // Check if file already exists
+                    if (file_exists($target_file)) {
+                        $this->redirect("admin/pages/$page", "bad/File already exists!");
+                    }
+                    // Check file size
+                    if ($_FILES["fileToUpload"]["size"] > 5000000) {
+                        $this->redirect("admin/pages/$page", "bad/File must be under 5MB!");
+                    }
+                    // Finish upload
+                    if (move_uploaded_file($_FILES["toUpload"]["tmp_name"], $target_file)) {
+                        $this->redirect("admin/pages/$page", "good/File uploaded!");
+                    } else {
+                        $this->redirect("admin/pages/$page", "bad/File upload error!");
+                    }
+                    break;
+
                 case 'login':
                     $params = FormUtils::getParametersWithToken(array("username", "password"), $post, "login");
 

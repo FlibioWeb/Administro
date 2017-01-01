@@ -9,6 +9,7 @@
 
     $parseToken = FormUtils::generateToken("parsemarkdown");
     $saveToken = FormUtils::generateToken("savepage");
+    $uploadToken = FormUtils::generateToken("uploadfile");
 
     // Load all page files
     $imgFiles = "";
@@ -41,6 +42,14 @@
         <?php echo $imgFiles; ?>
         <header class="title sub">Other Files</header>
         <?php echo $otherFiles; ?>
+        <hr>
+        <header class="title sub">File Upload</header>
+        <form action="<?php echo BASEPATH."form/uploadfile" ?>" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="token" value="<?php echo $uploadToken; ?>">
+            <input type="hidden" name="page" value="<?php echo $page; ?>">
+            <input type="file" name="toUpload">
+            <input type="submit" value="Upload" name="submit">
+        </form>
     </section>
 </section>
 <script>
@@ -95,6 +104,7 @@
                                 window.displayMessage(true, "Successfully saved the page content!");
                             } else {
                                 // Save failed
+                                window.displayMessage(false, "Failed to save the page content!");
                             }
                         }
                     };
