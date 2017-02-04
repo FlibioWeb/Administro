@@ -27,13 +27,29 @@
                 // Loop through the data
                 foreach ($data as $page => $pageData) {
                     // Verify page data contains required fields and content exists
-                    if(file_exists(BASEDIR."pages/$page/content.md") && is_dir(BASEDIR."pages/$page/files") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"])) {
+                    if(file_exists(BASEDIR."pages/$page/content.md") && is_dir(BASEDIR."pages/$page/files") && isset($pageData["display"], $pageData["hidden"], $pageData["template"], $pageData["permission"], $pageData["priority"])) {
                         $pages[$page] = $pageData;
                     }
                 }
             }
             // Return pages
             return $pages;
+        }
+
+        public static function getOrder() {
+            $pages = self::getPages();
+            $order = array();
+            foreach ($pages as $id => $data) {
+                if(!$data["hidden"]) {
+                    $order[$id] = $data["priority"];
+                }
+            }
+            asort($order);
+            $final = array();
+            foreach ($order as $key => $value) {
+                array_push($final, $key);
+            }
+            return $final;
         }
 
         public static function pageExists($page) {
@@ -105,10 +121,13 @@
                     } else {
                         $content = $forcedContent;
                     }
+                    $config = \Administro\Config\ConfigManager::getConfiguration();
+                    // Load all pages
+                    $pages = self::getOrder();
                     // Parse the content
                     $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
-                    $variables = array("sitetitle" => \Administro\Config\ConfigManager::getConfiguration()["name"], "page" => $pageData["display"], "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
+                    $variables = array("sitetitle" => $config["name"], "currentpage" => $pageData["display"], "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
                     unset($_SESSION["message-good"]);
                     unset($_SESSION["message-bad"]);
                     // Replace variables
@@ -122,8 +141,9 @@
                         $content = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $content);
                         $content = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $content);
                     }
-                    // Push content variable
+                    // Push new variables
                     $variables["content"] = $content;
+                    $variables["pages"] = $pages;
                     // Setup Twig
                     \Twig_Autoloader::register();
                     $loader = new \Twig_Loader_Filesystem(BASEDIR."templates");

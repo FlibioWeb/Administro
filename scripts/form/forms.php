@@ -175,7 +175,7 @@
                 redirect("", "bad/You do not have permission to do that!");
             }
             $params = FormUtils::verifyPostToken($post, "clearcache");
-
+            $updater = Administro::Instance()->updater;
             if($params !== false) {
                 // Clear Twig cache
                 @FileUtils::deleteFolder(BASEDIR."cache");
