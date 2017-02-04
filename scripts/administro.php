@@ -9,7 +9,7 @@
     use \Administro\Plugin\PluginManager;
     use \Administro\Route\RouteManager;
     use \Administro\User\UserManager;
-    use \Administro\Form\FormProcessor;
+    use \Administro\Form\FormManager;
     use \Administro\Update\Updater;
     use \Administro\Admin\AdminPartials;
     use \Administro\Admin\AdminRoutes;
@@ -23,7 +23,7 @@
         var $pluginmanager;
         var $routemanager;
         var $usermanager;
-        var $formprocessor;
+        var $formmanager;
         var $updater;
         var $adminpartials;
         var $adminroutes;
@@ -37,7 +37,7 @@
             $this->pluginmanager = new PluginManager;
             $this->routemanager = new RouteManager;
             $this->usermanager = new UserManager;
-            $this->formprocessor = new FormProcessor;
+            $this->formmanager = new FormManager;
             $this->updater = new Updater;
             $this->adminpartials = new AdminPartials;
             $this->adminroutes = new AdminRoutes;

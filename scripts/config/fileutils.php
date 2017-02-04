@@ -4,7 +4,7 @@
 
     class FileUtils {
 
-        // Deletes a golder
+        // Deletes a folder
         public static function deleteFolder($folder) {
             // Loop through all files
             foreach (scandir($folder) as $file) {

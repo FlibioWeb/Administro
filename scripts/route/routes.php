@@ -43,7 +43,7 @@
         }
 
         public function routeUser($params) {
-            Administro::Instance()->formprocessor->processForm($params[2], $GLOBALS["AdministroPost"]);
+            Administro::Instance()->formmanager->processForm($params[2], $GLOBALS["AdministroPost"]);
             return false;
         }
 

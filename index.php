@@ -14,6 +14,7 @@
 
     // Define base variables
     define('BASEDIR', __DIR__."/");
+    define('DATADIR', BASEDIR."/data/");
     define('BASEPATH', implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/');
 
     // Accept post data if it is set

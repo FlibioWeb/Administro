@@ -39,4 +39,12 @@
             return false;
         }
 
+        // Retrieve a plugin
+        public function getPlugin($plugin) {
+            if(isset($this->plugins[$plugin])) {
+                return $this->plugins[$plugin];
+            }
+            return false;
+        }
+
     }
