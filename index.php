@@ -22,13 +22,14 @@
         $GLOBALS["AdministroPost"] = $_POST;
     }
 
+    // Install if needed
+    require_once BASEDIR."scripts/install/install.php";
+    Installer::install();
+
     // Include all scripts
     foreach (glob("{scripts/**/*.php,scripts/*.php}", GLOB_BRACE) as $filename) {
         require_once $filename;
     }
-
-    // Install if needed
-    Installer::install();
 
     // Include all plugins
     foreach (glob("plugins/**/*.php") as $filename) {

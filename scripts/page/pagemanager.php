@@ -47,7 +47,8 @@
             asort($order);
             $final = array();
             foreach ($order as $key => $value) {
-                array_push($final, $key);
+                $final[$key]["display"] = $pages[$key]["display"];
+                $final[$key]["id"] = $key;
             }
             return $final;
         }
@@ -109,7 +110,7 @@
             return false;
         }
 
-        public static function renderPage($page, $forcedContent = false) {
+        public static function renderPage($page, $forcedContent = false, $useTwig = true) {
             // Attempt to load page data
             $pageData = self::getPage($page);
             if($pageData !== false) {
@@ -121,13 +122,25 @@
                     } else {
                         $content = $forcedContent;
                     }
-                    $config = \Administro\Config\ConfigManager::getConfiguration();
+                    $config = Administro::Instance()->configmanager->getConfiguration();
+                    $um = Administro::Instance()->usermanager;
                     // Load all pages
                     $pages = self::getOrder();
                     // Parse the content
                     $content = (new \Administro\Lib\Parsedown)->text($content, $page);
                     // Setup variables
-                    $variables = array("sitetitle" => $config["name"], "currentpage" => $pageData["display"], "basepath" => BASEPATH, "goodmessage" => (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : ""), "badmessage" => (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : ""));
+                    $variables["sitetitle"] = $config["name"];
+                    $variables["pageid"] = $page;
+                    $variables["currentpage"] = $pageData["display"];
+                    $variables["basepath"] = BASEPATH;
+                    $variables["goodmessage"] = (isset($_SESSION["message-good"]) ? $_SESSION["message-good"] : "");
+                    $variables["badmessage"] = (isset($_SESSION["message-bad"]) ? $_SESSION["message-bad"] : "");
+                    $variables["loggedin"] = $um->isLoggedIn();
+                    $variables["admin"] = $um->hasPermission("admin.view");
+                    $variables["user"] = "";
+                    if($um->isLoggedIn()) {
+                        $variables["user"] = $um->getUser()["display"];
+                    }
                     unset($_SESSION["message-good"]);
                     unset($_SESSION["message-bad"]);
                     // Replace variables
@@ -141,9 +154,13 @@
                         $content = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $content);
                         $content = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $content);
                     }
+                    if(!$useTwig) {
+                        return $content;
+                    }
                     // Push new variables
                     $variables["content"] = $content;
                     $variables["pages"] = $pages;
+                    $variables["rand"] = microtime();
                     // Setup Twig
                     \Twig_Autoloader::register();
                     $loader = new \Twig_Loader_Filesystem(BASEDIR."templates");
@@ -152,7 +169,13 @@
                         'autoescape' => false,
                     ));
                     // Render the page
-                    return $twig->render($pageData["template"].".html.twig", $variables);
+                    $rendered = $twig->render($pageData["template"].".html.twig", $variables);
+                    // Replace handlers in rendered
+                    foreach ($pluginmanager->handlers as $handler) {
+                        $rendered = str_ireplace("[[ ".$handler." ]]", $pluginmanager->callHandler($handler), $rendered);
+                        $rendered = str_ireplace("[[".$handler."]]", $pluginmanager->callHandler($handler), $rendered);
+                    }
+                    return $rendered;
                 }
             }
             return false;

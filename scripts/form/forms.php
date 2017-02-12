@@ -17,7 +17,7 @@
             if($params != false) {
                 $page = $params["page"];
 
-                return Administro::Instance()->pagemanager->renderPage($page, $params["content"]);
+                return Administro::Instance()->pagemanager->renderPage($page, $params["content"], false);
             } else {
                 // Invalid parameters
                 return "Error rendering page!";

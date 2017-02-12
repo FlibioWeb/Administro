@@ -10,6 +10,7 @@
     use \Administro\Route\RouteManager;
     use \Administro\User\UserManager;
     use \Administro\Form\FormManager;
+    use \Administro\File\FileManager;
     use \Administro\Update\Updater;
     use \Administro\Admin\AdminPartials;
     use \Administro\Admin\AdminRoutes;
@@ -24,6 +25,7 @@
         var $routemanager;
         var $usermanager;
         var $formmanager;
+        var $filemanager;
         var $updater;
         var $adminpartials;
         var $adminroutes;
@@ -38,6 +40,7 @@
             $this->routemanager = new RouteManager;
             $this->usermanager = new UserManager;
             $this->formmanager = new FormManager;
+            $this->filemanager = new FileManager;
             $this->updater = new Updater;
             $this->adminpartials = new AdminPartials;
             $this->adminroutes = new AdminRoutes;

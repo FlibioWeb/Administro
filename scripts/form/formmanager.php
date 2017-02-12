@@ -28,7 +28,7 @@
                 // Check if the id matches the form id
                 if($form->getId() == $id) {
                     // Process the form
-                    $form->process($post);
+                    return $form->process($post);
                 } else {
                     continue;
                 }

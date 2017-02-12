@@ -6,9 +6,11 @@
 
     class ConfigManager {
 
+        private $defaultValues;
+
         public function getConfiguration() {
             // Create default options
-            $defaultValues = array("name" => "My Website", "default-page" => "home");
+            $this->defaultValues = array("name" => "My Website", "default-page" => "home", "data" => array("images/myfile.jpg" => "none"));
             // Check if the config directory exists
             if(!file_exists(BASEDIR."config")) {
                 mkdir(BASEDIR."config");
@@ -22,7 +24,7 @@
                 file_put_contents(BASEDIR."config/config.yaml", "");
             }
             // Set configuration values if they don't exist
-            foreach($defaultValues as $option => $value) {
+            foreach($this->defaultValues as $option => $value) {
                 if(!isset($currentConfig[$option])) {
                     $currentConfig[$option] = $value;
                 }
@@ -40,5 +42,9 @@
             $config[$key] = $value;
             // Save the file
             file_put_contents(BASEDIR."config/config.yaml", Spyc::YAMLDump($config, false, false, true));
+        }
+
+        public function defaultValue($key, $value) {
+            $this->defaultValues[$key] = $value;
         }
     }

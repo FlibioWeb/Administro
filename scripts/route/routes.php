@@ -36,6 +36,26 @@
 
     }
 
+    class FileRoute extends Route {
+
+        public function isValid($params) {
+            return (count($params) > 1 && $params[1] == "file");
+        }
+
+        public function routeUser($params) {
+            $file = "";
+            for($i = 2; $i <= count($params); $i++) {
+                if(empty($file)) {
+                    $file = $params[$i];
+                } else {
+                    $file.="/".$params[$i];
+                }
+            }
+            die(Administro::Instance()->filemanager->processFile($file));
+        }
+
+    }
+
     class FormRoute extends Route {
 
         public function isValid($params) {
@@ -43,8 +63,7 @@
         }
 
         public function routeUser($params) {
-            Administro::Instance()->formmanager->processForm($params[2], $GLOBALS["AdministroPost"]);
-            return false;
+            die(Administro::Instance()->formmanager->processForm($params[2], $GLOBALS["AdministroPost"]));
         }
 
     }

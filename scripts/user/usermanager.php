@@ -100,8 +100,6 @@
 
         // Checks if any user exists
         public function anyUserExists() {
-            $this->generateFile();
-
             // Load the users file
             $data = Spyc::YAMLLoad(BASEDIR."config/users.yaml");
 
