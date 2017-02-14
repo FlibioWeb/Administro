@@ -10,7 +10,7 @@
 
         public function getConfiguration() {
             // Create default options
-            $this->defaultValues = array("name" => "My Website", "default-page" => "home", "data" => array("images/myfile.jpg" => "none"));
+            $this->defaultValues = array("name" => "My Website", "default-page" => "home", "data" => array("administro/*" => "none"));
             // Check if the config directory exists
             if(!file_exists(BASEDIR."config")) {
                 mkdir(BASEDIR."config");

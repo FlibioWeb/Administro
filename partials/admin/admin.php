@@ -36,10 +36,20 @@
 ?>
 <head>
     <title>Admin | <?php echo $siteName ?></title>
-    <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>partials/style/admin.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>file/administro/style/admin.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 </head>
-
+<!-- IE Style: Paul Sweatte on StackOverflow -->
+<style>
+    @media all and (-ms-high-contrast:none) {
+        .board {
+            display: block;
+            margin-left: 220px;
+            width: calc(100vw - 220px) !important;
+        }
+     }
+</style>
+<!-- End IE Style -->
 <body>
     <aside class="sidebar">
         <header class="header">

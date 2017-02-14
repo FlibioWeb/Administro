@@ -24,6 +24,13 @@
                 $GLOBALS["requestedPage"] = $configManager->getConfiguration()["default-page"];
             }
             if(count($params) == 1) {
+                // Check if user can view page
+                $page = Administro::Instance()->pagemanager->getPage($params[1]);
+                if($page !== false && $page["permission"] !== "") {
+                    if(!Administro::Instance()->usermanager->hasPermission($page["permission"])) {
+                        $this->redirect("", "bad/You do not have permission to view that page!");
+                    }
+                }
                 // Check if the page is the default page
                 if($configManager->getConfiguration()["default-page"] == $params[1]) {
                     // Redirect the user to the base path

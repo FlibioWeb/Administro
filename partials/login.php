@@ -24,7 +24,7 @@
 ?>
 <head>
     <title>Login | <?php echo $title; ?></title>
-    <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>partials/style/main.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo BASEPATH; ?>file/administro/style/main.css">
 </head>
 <body>
     <h3><?php echo $title; ?> Login</h3>

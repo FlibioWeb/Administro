@@ -3,7 +3,7 @@
     use \Administro\Administro;
 
     $page = "404";
-    
+
     if(isset($GLOBALS["requestedPage"])) {
         $page = $GLOBALS["requestedPage"];
     }

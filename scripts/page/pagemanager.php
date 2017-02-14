@@ -40,6 +40,9 @@
             $pages = self::getPages();
             $order = array();
             foreach ($pages as $id => $data) {
+                if($data["permission"] !== "") {
+                    if(!Administro::Instance()->usermanager->hasPermission($data["permission"])) continue;
+                }
                 if(!$data["hidden"]) {
                     $order[$id] = $data["priority"];
                 }

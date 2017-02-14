@@ -13,7 +13,7 @@
         }
 
         // Registers a new route.
-        public function registerForms($form) {
+        public function registerForm($form) {
             if($form instanceof Form) {
                 array_push($this->forms, $form);
                 return true;
