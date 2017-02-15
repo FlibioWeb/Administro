@@ -42,7 +42,7 @@
         }
 
         // Loads the file
-        public function processFile($path) {
+        public function processFile($path, $page = false) {
             $permissions = array();
             // Generate permissions
             foreach(Administro::Instance()->configmanager->getConfiguration()["data"] as $f => $p) {
@@ -51,19 +51,36 @@
             foreach($this->files as $f => $p) {
                 $permissions = array_merge($permissions, $this->setPerms(BASEDIR."data/$f", $p));
             }
+            $user = Administro::Instance()->usermanager;
             // Check if the file exists
             $file = BASEDIR."data/$path";
-            // Check for permissions
-            $user = Administro::Instance()->usermanager;
-            if(isset($permissions[$file])) {
-                $perm = $permissions[$file];
-                if($perm != "none") {
-                    if(!$user->hasPermission($perm)) {
-                        die("Invalid permissions!");
+            // Check if page exists
+            $ex = explode("/", $path);
+            if($page && count($ex) === 3) {
+                $p = Administro::Instance()->pagemanager->getPage($ex[1]);
+                if($p !== false) {
+                    // Check if page has permissions
+                    if(!empty($p["permission"])) {
+                        if(!$user->hasPermission($p["permission"])) {
+                            die("Invalid permissions!");
+                        }
                     }
+                    $file = BASEDIR."pages/".$ex[1]."/files/".urldecode($ex[2]);
+                } else {
+                    die("Invalid file!");
                 }
             } else {
-                die("Invalid permissions!");
+                // Check for permissions
+                if(isset($permissions[$file])) {
+                    $perm = $permissions[$file];
+                    if($perm != "none") {
+                        if(!$user->hasPermission($perm)) {
+                            die("Invalid permissions!");
+                        }
+                    }
+                } else {
+                    die("Invalid permissions!");
+                }
             }
             // Load file
             if(!file_exists($file)) {

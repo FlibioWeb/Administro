@@ -17,7 +17,7 @@
     foreach ($pagemanager->getPageFiles($page) as $file) {
         // Check if the file is an image
         $link = $pagemanager->getFileLink($page, $file);
-        $prefix = BASEPATH."pages/$page/files/";
+        $prefix = BASEPATH."file/pages/$page/";
         if(@is_array(getimagesize($link))){
             // The file is an image
             $imgFiles.="<img title='$file' src='$prefix$file'></img>";

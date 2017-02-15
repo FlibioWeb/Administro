@@ -58,7 +58,7 @@
                     $file.="/".$params[$i];
                 }
             }
-            die(Administro::Instance()->filemanager->processFile($file));
+            die(Administro::Instance()->filemanager->processFile($file, ($params[2] === "pages")));
         }
 
     }
