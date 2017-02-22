@@ -26,6 +26,28 @@
 
     }
 
+    class DropdownForm extends Form {
+
+        public function getId() {
+            return "dropdown";
+        }
+
+        public function process($post) {
+            $params = FormUtils::getParameters(array("page", "file"), $post);
+
+            if($params != false) {
+                $page = $params["page"];
+                $file = $params["file"];
+
+                $this->redirect("file/pages/$page/$file");
+            } else {
+                // Invalid parameters
+                $this->redirect("", "bad/Invalid parameters!");
+            }
+        }
+
+    }
+
     class SavePageForm extends Form {
 
         public function getId() {

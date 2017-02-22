@@ -75,7 +75,19 @@
         status: ["lines", "words"],
         toolbar: ["bold", "italic", "heading", "|",
             "quote", "unordered-list", "ordered-list", "|",
-            "link", "image", "table", "|",
+            "link", "image", "table",
+            {
+                name: "dropdown",
+                action: function customFunction(editor){
+                    var cm = editor.codemirror;
+                    var doc = cm.getDoc();
+                    var cursor = doc.getCursor();
+                    doc.replaceRange("{dropdown-Dropdown Name}{Item 1:file.txt, Item 2:file2.txt}", cursor);
+                },
+                className: "fa fa-caret-square-o-down",
+                title: "Dropdown",
+            },
+            "|",
             "preview", "side-by-side", {
                 name: "fullscreen",
                 action: function fullscreen(editor){

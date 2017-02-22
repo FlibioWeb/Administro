@@ -35,7 +35,7 @@
                     $perms = array_merge($perms, $this->setPerms($file, $perm, false));
                 } else {
                     // Add
-                    $perms[$file] = $perm;
+                    $perms[strtolower($file)] = $perm;
                 }
             }
             return $perms;
@@ -71,9 +71,9 @@
                 }
             } else {
                 // Check for permissions
-                if(isset($permissions[$file])) {
-                    $perm = $permissions[$file];
-                    if($perm != "none") {
+                if(isset($permissions[strtolower($file)])) {
+                    $perm = $permissions[strtolower($file)];
+                    if($perm !== "none") {
                         if(!$user->hasPermission($perm)) {
                             die("Invalid permissions!");
                         }

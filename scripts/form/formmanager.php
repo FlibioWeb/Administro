@@ -9,7 +9,7 @@
         private $forms;
 
         public function __construct() {
-            $this->forms = array(new ParseForm, new SavePageForm, new UploadForm, new LoginForm, new UpdateForm, new CacheForm);
+            $this->forms = array(new ParseForm, new DropdownForm, new SavePageForm, new UploadForm, new LoginForm, new UpdateForm, new CacheForm);
         }
 
         // Registers a new route.

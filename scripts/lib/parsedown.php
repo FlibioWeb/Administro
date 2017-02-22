@@ -998,12 +998,13 @@ class Parsedown
         '_' => array('Emphasis'),
         '`' => array('Code'),
         '~' => array('Strikethrough'),
+        '{' => array('Dropdown'),
         '\\' => array('EscapeSequence'),
     );
 
     # ~
 
-    protected $inlineMarkerList = '!"*_&[:<>`~\\';
+    protected $inlineMarkerList = '!"*_&[:<>`~{\\';
 
     #
     # ~
@@ -1185,7 +1186,7 @@ class Parsedown
         $prefix = "";
 
         if(isset($GLOBALS["parsedownPage"]) && !empty($GLOBALS["parsedownPage"])) {
-            $prefix = BASEPATH."pages/".$GLOBALS["parsedownPage"]."/files/";
+            $prefix = BASEPATH."file/pages/".$GLOBALS["parsedownPage"]."/";
         }
 
         $Inline = array(
@@ -1426,6 +1427,34 @@ class Parsedown
         }
 
         return $text;
+    }
+
+    # Administro Inline Elements {
+
+    protected function inlineDropdown($excerpt)
+    {
+        if (preg_match('/^{dropdown-(.+)}{(.+)}/', $excerpt['text'], $matches))
+        {
+            $dropdown = "<form action='".BASEPATH."form/dropdown' method='post' class='file-dropdown'><select name='file'>";
+            foreach(explode(",", $matches[2]) as $option) {
+                $ddv = trim($option);
+                $d = explode(":", $ddv);
+                if(count($d) !== 2) continue;
+                $dropdown.= "<option value='".$d[1]."'>".$d[0]."</option>";
+            }
+            $dropdown .= "</select><input type='hidden' name='page' value='".$GLOBALS["parsedownPage"]."'>";
+            $dropdown .= "<input type='submit' value='View ".$matches[1]."'></form>";
+            return array(
+
+                // How many characters to advance the Parsedown's
+                // cursor after being done processing this tag.
+                'extent' => strlen($matches[0]),
+                'element' => array(
+                    'name' => 'span',
+                    'text' => $dropdown
+                ),
+            );
+        }
     }
 
     #

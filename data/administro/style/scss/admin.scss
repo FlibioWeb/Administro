@@ -69,7 +69,6 @@ body, html {
     height: 100%;
     margin-left: 220px;
     width: calc(100% - 220px);
-    display: inline-block;
     & .header {
         font-family: 'Yanone Kaffeesatz', sans-serif;
         font-size: 25px;
@@ -85,7 +84,7 @@ body, html {
     & .board {
         padding: 25px;
         background-color: #5A6F7A;
-        min-height: calc(100% - 50px);
+        min-height: calc(100vh - 50px);
         @include border-box();
         & .maintenance {
             background-color: #469BC2;
@@ -209,5 +208,22 @@ body, html {
 .form {
     & .title {
         font-weight: 700;
+    }
+}
+.pform {
+    margin-top: 10px;
+    & .title {
+        font-size: 17px;
+    }
+    & .row {
+        margin: 10px 0;
+        clear: both;
+        & label {
+            display: block;
+            font-size: 13px;
+        }
+        & .input {
+            display: inline-block;
+        }
     }
 }

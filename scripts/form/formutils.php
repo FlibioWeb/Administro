@@ -51,9 +51,9 @@
 
             // Verify that all of the parameters exist
             $fail = false;
-            foreach ($parameters as $param => $value) {
-                if(isset($post["param"])) {
-                    $verifiedParamaters[$param] = htmlentities($value);
+            foreach ($parameters as $param) {
+                if(isset($post[$param])) {
+                    $verifiedParamaters[$param] = htmlentities($post[$param]);
                 } else {
                     $fail = true;
                     break;
