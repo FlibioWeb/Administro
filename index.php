@@ -1,40 +1,20 @@
 <?php
 
-    use \Administro\Administro;
+    // Verify the PHP version
+    if(PHP_VERSION_ID < 50500) {
+        die("Administro requires PHP v5.5.0 or greater!");
+    }
 
-    // Initialize the session if necessary
+    // Start the session
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Verify the PHP version
-    if (version_compare(phpversion(), '5.5') < 0) {
-        die("<b>Notice: </b>Administro requires PHP version 5.5 or greater! You are running version ".phpversion()."!");
-    }
+    // Load Composer dependencies
+    require_once(__DIR__ . '/vendor/autoload.php');
 
-    // Define base variables
-    define('BASEDIR', __DIR__."/");
-    define('DATADIR', BASEDIR."/data/");
-    define('BASEPATH', implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/');
+    // Load the website
+    $administro = new Administro(__DIR__);
 
-    // Accept post data if it is set
-    if(isset($_POST)) {
-        $GLOBALS["AdministroPost"] = $_POST;
-    }
-
-    // Install if needed
-    require_once BASEDIR."scripts/install/install.php";
-    Installer::install();
-
-    // Include all scripts
-    foreach (glob("{scripts/**/*.php,scripts/*.php}", GLOB_BRACE) as $filename) {
-        require_once $filename;
-    }
-
-    // Include all plugins
-    foreach (glob("plugins/**/*.php") as $filename) {
-        require_once $filename;
-    }
-
-    // Load the router
-    Administro::Instance()->routemanager->routeUser();
+    // Run the website
+    $administro->run();

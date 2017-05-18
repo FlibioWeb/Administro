@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{% if current_page.title %}{{ current_page.title }} | {% endif %}{{ site_title }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ theme_url }}/style/main.css">
+</head>
+<body>
+
+    <div class='header'>
+        {% if logged_in %}
+            Welcome {{ user.name }}! - <a href='{{ base_dir }}logout'>Logout</a>
+        {% else %}
+            <a href='{{ base_dir }}login'>Login</a>
+        {% endif %}
+    </div>
+
+    <div class='navigation'>
+        <ul>
+            {% for page in pages %}
+                <li><a href='{{ base_dir ~ page.id }}'>{{ page.title }}</a>
+                    {% if page.id == current_page.id %}
+                        *
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class='content'>
+        {{ content }}
+    </div>
+
+</body>
+</html>

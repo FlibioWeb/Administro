@@ -1,0 +1,14 @@
+{
+    "require": {
+        "twig/twig": "^1.33.2",
+        "erusev/parsedown": "^1.6.2",
+        "symfony/yaml" : "^2.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "Administro": "lib/",
+            "AdministroParsedown": "lib/",
+            "AdministroPlugin": "lib/"
+        }
+    }
+}
