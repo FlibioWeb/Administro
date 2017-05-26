@@ -154,6 +154,8 @@
                     // Set version
                     $administro->config['version'] = $version;
                     file_put_contents($administro->configDir . 'config.yaml', Yaml::dump($administro->config));
+                    // Remove old version file
+                    @unlink($administro->rootDir . 'latest_update.yaml');
                     $administro->redirect('admin/home', 'good/Successfully updated!');
                 } else {
                     $administro->redirect('admin/home', 'bad/Update failed!');
