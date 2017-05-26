@@ -17,7 +17,7 @@
     }
 ?>
 <div class='title sub'>
-    Administro Status
+    Update Status
 </div>
 <div>
     <div><b>Current Version:</b> <?php echo $config['version']; ?></div>
@@ -27,15 +27,24 @@
         if($updateAvailable) {
             echo '<form action="' . $administro->baseDir . 'form/update" method="post">
                 <input type="hidden" name="nonce" value="' . $administro->generateNonce('update') . '">
-                <input class="button-primary" type="submit" value="Update Now">
+                <input class="button-secondary" type="submit" value="Update Now">
             </form>';
         } else {
             echo '<form action="' . $administro->baseDir . 'form/updatecheck" method="post">
                 <input type="hidden" name="nonce" value="' . $administro->generateNonce('updatecheck') . '">
-                <input class="button-primary" type="submit" value="Check for Update">
+                <input class="button-secondary" type="submit" value="Check for Update">
             </form>';
         }
     ?>
+</div>
+<div class='title sub'>
+    Maintenance
+</div>
+<div>
+    <form action='<?php echo $administro->baseDir; ?>form/clean' method='post'>
+        <input type='hidden' name='nonce' value='<?php echo $administro->generateNonce('clean'); ?>'>
+        <input class='button-secondary' type='submit' value='Clean Data'>
+    </form>
 </div>
 <div class='title sub'>
     Configuration
@@ -48,5 +57,5 @@
         </div>
     </div>
     <input type='hidden' name='nonce' value='<?php echo $configNonce; ?>'>
-    <input class="button-primary" type="submit" value="Save">
+    <input class="button-secondary" type="submit" value="Save">
 </form>

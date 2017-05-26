@@ -24,7 +24,8 @@ class Administro {
         'uploadpagefile',
         'updatecheck',
         'update',
-        'updateplugin'
+        'updateplugin',
+        'clean'
     );
     var $adminPages = array(
         'home' => array('icon' => 'home', 'name' => 'Home', 'file' => 'lib/admin/pages/home.php'),

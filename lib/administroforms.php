@@ -211,6 +211,22 @@
         }
     }
 
+    function cleanform($administro) {
+        $params = $administro->verifyParameters('clean', array());
+        if($params !== false) {
+            // Verify permission
+            if($administro->hasPermission('admin.clean')) {
+                // Fire clean event
+                $administro->callEvent('onCleanData');
+                $administro->redirect('admin/home', 'good/Cleaned data!');
+            } else {
+                $administro->redirect('admin/home', 'bad/You do not have permission!');
+            }
+        } else {
+            $administro->redirect('admin/home', 'bad/Invalid parameters!');
+        }
+    }
+
     function moveFolder($destination, $from) {
         $toMove = scandir($from);
         // Loop through all files
