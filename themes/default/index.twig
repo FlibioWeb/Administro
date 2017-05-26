@@ -13,6 +13,9 @@
         {% else %}
             <a href='{{ base_dir }}login'>Login</a>
         {% endif %}
+        {% if message is not empty %}
+            [ {{ message }} ]
+        {% endif %}
     </div>
 
     <div class='navigation'>

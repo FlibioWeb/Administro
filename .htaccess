@@ -1,9 +1,18 @@
 # Stop file viewing
 Options -Indexes -MultiViews
 
-# Rewrite all traffic through index
-
 RewriteEngine On
+
+# Block access to specific directories
+
+RewriteRule ^pages/*/ - [F,L]
+RewriteRule ^config/*/ - [F,L]
+RewriteRule ^data/*/ - [F,L]
+RewriteRule ^lib/*/ - [F,L]
+RewriteRule ^plugins/*/ - [F,L]
+RewriteRule ^vendor/*/ - [F,L]
+
+# Rewrite all traffic through index
 
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f

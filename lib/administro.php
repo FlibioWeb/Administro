@@ -16,23 +16,37 @@ class Administro {
         'file' => 'lib/route/file.php'
     );
     var $forms = array(
-        'login'
+        'login',
+        'dropdown',
+        'adminconfig',
+        'renderpage',
+        'savepage',
+        'uploadpagefile',
+        'updatecheck',
+        'update'
+    );
+    var $adminPages = array(
+        'home' => array('icon' => 'home', 'name' => 'Home', 'file' => 'lib/admin/pages/home.php'),
+        'pages' => array('icon' => 'file-text-o', 'name' => 'Pages', 'file' => 'lib/admin/pages/pages.php'),
+        'page' => array('icon' => '', 'name' => 'Page', 'file' => 'lib/admin/pages/page.php', 'hide' => true)
     );
 
     // Loaded objects
-    var $config, $params, $pages, $viewPages, $plugins, $users, $reservedRoute, $currentPage, $variables;
+    var $config, $params, $pages, $viewPages, $plugins, $users, $reservedRoute, $currentPage, $variables, $markdownFunctions;
 
     public function __construct($rootDir) {
         $this->rootDir = rtrim($rootDir, '/\\') . '/';
         $this->baseDir = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
+        $this->markdownFunctions = array();
     }
 
     public function run() {
-        //$s = microtime(true);
         // Load any plugins
         $this->loadPlugins();
         // Load the configuration file
         $this->loadConfig();
+        // Parse messages
+        $this->loadMessages();
         // Load users
         $this->loadUsers();
         // Load user data
@@ -52,7 +66,6 @@ class Administro {
             // Load the correct page
             $this->loadPage();
         }
-        //echo "<br>".((microtime(true) - $s) / 1000);
     }
 
     private function loadConfig() {
@@ -61,7 +74,8 @@ class Administro {
             'title' => 'Administro Site',
             'theme' => 'default',
             'default-page' => 'home',
-            'default-template' => 'index'
+            'default-template' => 'index',
+            'version' => 0
         );
         // Check if the config exists
         if(file_exists($this->configDir . 'config.yaml')) {
@@ -72,13 +86,14 @@ class Administro {
             file_put_contents($this->configDir . 'config.yaml', Yaml::dump($defaultConfig));
             $this->config = $defaultConfig;
         }
+        $this->callEvent('configLoaded');
     }
 
     private function parseRoute() {
         $uri = substr(strtolower($_SERVER['REQUEST_URI']), strlen($this->baseDir));
         if (strstr($uri, '?')) $uri = substr($uri, 0, strpos($uri, '?'));
         $request = '/' . trim($uri, '/');
-        $this->params = array_values(array_filter(explode("/", $request)));
+        $this->params = array_values(array_filter(explode("/", urldecode($request))));
         if(count($this->params) >= 1) {
             // Check if this is a reserved route
             $this->reservedRoute = isset($this->reservedRoutes[$this->params[0]]);
@@ -119,32 +134,29 @@ class Administro {
                 $this->viewPages[$id] = $page;
             }
         }
-        // Attempt to load the 404 page
-        if(file_exists($this->rootDir . 'pages/404.md')) {
-            $page404 = array(
-                'id' => '404',
-                'title' => '404',
-                'template' => $this->config['default-template'],
-                'priority' => -1,
-                'rawContent' => file_get_contents($this->rootDir . 'pages/404.md')
-            );
-        } else {
-            $page404 = array(
-                'id' => '404',
-                'title' => '404',
-                'template' => $this->config['default-template'],
-                'priority' => -1,
-                'rawContent' => "404 Error - Page not found"
-            );
-        }
+        // Add the 404 page
+        $page404 = array(
+            'id' => '404',
+            'title' => '404',
+            'template' => $this->config['default-template'],
+            'priority' => -1,
+            'rawContent' => "404 Error - Page not found"
+        );
         $this->pages['404'] = $page404;
         // Sort pages
         uasort($this->pages, function($p1, $p2) {
             $c1 = $p1['priority'];
             $c2 = $p2['priority'];
-            if($c1 < $c2) return -1;
+            if($c1 > $c2) return -1;
             if($c1 == $c2) return 0;
-            if($c1 > $c2) return 1;
+            if($c1 < $c2) return 1;
+        });
+        uasort($this->viewPages, function($p1, $p2) {
+            $c1 = $p1['priority'];
+            $c2 = $p2['priority'];
+            if($c1 > $c2) return -1;
+            if($c1 == $c2) return 0;
+            if($c1 < $c2) return 1;
         });
     }
 
@@ -177,13 +189,22 @@ class Administro {
             $this->currentPage['template'] = $this->config['default-template'];
         }
         // Parse the page
-        $parsedContent = (new AdministroParsedown($this))->text($this->currentPage['rawContent']);
-        // Replace custom variables
-        foreach($this->variables as $k => $v) {
-            $parsedContent = str_ireplace('[[ ' . $k . ' ]]', $v, $parsedContent);
-        }
+        $parsedContent = $this->parseMarkdown($this->currentPage['rawContent'], $pageId);
         // Render the page
         $this->renderPage($this->currentPage, $parsedContent);
+    }
+
+    public function parseMarkdown($content, $pageId) {
+        $content = (new AdministroParsedown($this, $pageId))->text($content);
+        // Replace variables
+        foreach($this->variables as $k => $v) {
+            $content = str_ireplace('[[ ' . $k . ' ]]', $v, $content);
+        }
+        foreach($this->markdownFunctions as $k => $v) {
+            $d = explode(':', $v);
+            $content = str_ireplace('[[ ' . $k . ' ]]', call_user_func(array($this->plugins[$d[0]], $d[1])), $content);
+        }
+        return $content;
     }
 
     public function renderPage($page, $content) {
@@ -191,7 +212,7 @@ class Administro {
         $twigLoader = new Twig_Loader_Filesystem('themes/' . $this->config['theme']);
         $twig = new Twig_Environment($twigLoader, array('autoescape' => false));
         // Display the page
-        echo $twig->render($page['template'] . '.twig', array(
+        echo $twig->render($page['template'] . '.twig', array_merge(array(
             'content' => $content,
             'site_title' => $this->config['title'],
             'current_page' => $page,
@@ -199,8 +220,9 @@ class Administro {
             'logged_in' => isset($_SESSION['user']),
             'theme_url' => $this->baseDir . 'themes/' . $this->config['theme'],
             'base_dir' => $this->baseDir,
-            'user' => isset($_SESSION['user']) ? $_SESSION['user'] : array()
-        ));
+            'user' => isset($_SESSION['user']) ? $_SESSION['user'] : array(),
+            'is_admin' => $this->hasPermission('admin.view')
+        ), $this->variables));
     }
 
     private function loadPlugins() {
@@ -215,8 +237,27 @@ class Administro {
             $class = $f . 'Plugin';
             $plugin = new $class($this);
             // Add the plugin
-            array_push($this->plugins, $plugin);
+            $this->plugins[$f] = $plugin;
         }
+    }
+
+    private function loadMessages() {
+        // Load messages
+        $messageType = '';
+        $message = '';
+        if(isset($_SESSION['message-good'])) {
+            $messageType = 'good';
+            $message = $_SESSION['message-good'];
+        } else if(isset($_SESSION['message-bad'])) {
+            $messageType = 'bad';
+            $message = $_SESSION['message-bad'];
+        }
+        // Save messages
+        $this->variables['message'] = $message;
+        $this->variables['message_type'] = $messageType;
+        // Remove messages from session
+        unset($_SESSION['message-good']);
+        unset($_SESSION['message-bad']);
     }
 
     private function loadUsers() {
@@ -298,6 +339,16 @@ class Administro {
     }
 
     public function redirect($location, $message = '') {
+        // Handle message
+        $messageData = explode('/', $message);
+        if(count($messageData) === 2) {
+            if($messageData[0] == 'good') {
+                $_SESSION['message-good'] = $messageData[1];
+            } else {
+                $_SESSION['message-bad'] = $messageData[1];
+            }
+        }
+        // Redirect
         header('Location: ' . $this->baseDir . $location);
         die();
     }
@@ -308,15 +359,17 @@ class Administro {
         return $nonce;
     }
 
-    public function verifyNonce($formName, $nonce) {
-        $resp = (isset($_SESSION['nonce-' . $formName]) ? $_SESSION['nonce-' . $formName] : '' === $nonce);
-        unset($_SESSION['nonce-' . $formName]);
+    public function verifyNonce($formName, $nonce, $delete = true) {
+        $resp = (isset($_SESSION['nonce-' . $formName]) ? $_SESSION['nonce-' . $formName] == $nonce : false);
+        if($delete) {
+            unset($_SESSION['nonce-' . $formName]);
+        }
         return $resp;
     }
 
-    public function verifyParameters($formName, $params) {
+    public function verifyParameters($formName, $params, $deleteNonce = true) {
         // Verify nonce
-        if(isset($_POST['nonce']) && $this->verifyNonce($formName, $_POST['nonce'])) {
+        if(isset($_POST['nonce']) && $this->verifyNonce($formName, $_POST['nonce'], $deleteNonce)) {
             // Check parameters
             $verified = array();
             foreach($params as $param) {

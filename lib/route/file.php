@@ -11,7 +11,7 @@
                 die('Invalid permission!');
             }
             // Check if the file exists
-            $file = $administro->rootDir . 'pages/' . $params[1] . '/files/' . $params[2];
+            $file = $administro->rootDir . 'pages/' . $params[1] . '/files/' . urldecode($params[2]);
             if(file_exists($file)) {
                 // Display the file
                 $type = getMime($file);
