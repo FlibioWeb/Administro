@@ -23,12 +23,14 @@ class Administro {
         'savepage',
         'uploadpagefile',
         'updatecheck',
-        'update'
+        'update',
+        'updateplugin'
     );
     var $adminPages = array(
         'home' => array('icon' => 'home', 'name' => 'Home', 'file' => 'lib/admin/pages/home.php'),
         'pages' => array('icon' => 'file-text-o', 'name' => 'Pages', 'file' => 'lib/admin/pages/pages.php'),
-        'page' => array('icon' => '', 'name' => 'Page', 'file' => 'lib/admin/pages/page.php', 'hide' => true)
+        'page' => array('icon' => '', 'name' => 'Page', 'file' => 'lib/admin/pages/page.php', 'hide' => true),
+        'plugins' => array('icon' => 'wrench', 'name' => 'Plugins', 'file' => 'lib/admin/pages/plugins.php')
     );
 
     // Loaded objects
@@ -235,7 +237,7 @@ class Administro {
             require_once $this->rootDir . 'plugins/' . $f . '/plugin.php';
             // Initialize the plugin
             $class = $f . 'Plugin';
-            $plugin = new $class($this);
+            $plugin = new $class($this, $f);
             // Add the plugin
             $this->plugins[$f] = $plugin;
         }

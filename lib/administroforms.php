@@ -168,6 +168,49 @@
         }
     }
 
+    function updatepluginform($administro) {
+        $params = $administro->verifyParameters('updateplugin', array('plugin'));
+        $context = stream_context_create(array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT'])));
+        if($params !== false) {
+            // Verify permission
+            if($administro->hasPermission('admin.update')) {
+                // Load latest update
+                $id = $params['plugin'];
+                if(!isset($administro->plugins[$id])) {
+                    $administro->redirect('admin/plugins', 'bad/Invalid plugin!');
+                }
+                $info = $administro->plugins[$id]->getLatest();
+                $url = 'https://github.com/' . $info['repository'] . '/archive/master.zip';
+                $downloadFile = $administro->rootDir . str_ireplace(' ', '', $id) . 'install.zip';
+                // Install
+                file_put_contents($downloadFile, file_get_contents($url, false, $context));
+                // Extract the zip file
+                $zip = new ZipArchive;
+                $res = $zip->open($downloadFile);
+                if ($res === TRUE) {
+                    $zip->extractTo($administro->rootDir);
+                    $zip->close();
+                    // Delete the zip file
+                    unlink($downloadFile);
+                    // Move the files
+                    $repoName = explode('/', $info['repository'])[1];
+                    $destination = $administro->rootDir . 'plugins/' . $id . '/';
+                    $from = glob($administro->rootDir . $repoName . '-*/')[0];
+                    moveFolder($destination, $from);
+                    // Remove old version file
+                    @unlink($administro->rootDir . 'latest_update.yaml');
+                    $administro->redirect('admin/plugins', 'good/Successfully updated ' . $id . '!');
+                } else {
+                    $administro->redirect('admin/plugins', 'bad/Update failed!');
+                }
+            } else {
+                $administro->redirect('admin/plugins', 'bad/You do not have permission!');
+            }
+        } else {
+            $administro->redirect('admin/plugins', 'bad/Invalid parameters!');
+        }
+    }
+
     function moveFolder($destination, $from) {
         $toMove = scandir($from);
         // Loop through all files
