@@ -16,10 +16,6 @@
         }
     }
 ?>
-<div class='title'>
-    Administro
-</div>
-<div class='spacer'></div>
 <div class='title sub'>
     Administro Status
 </div>
