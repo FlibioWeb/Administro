@@ -369,16 +369,17 @@ class Administro {
         return $resp;
     }
 
-    public function verifyParameters($formName, $params, $deleteNonce = true) {
+    public function verifyParameters($formName, $params, $deleteNonce = true, $data = false) {
+        if($data === false) $data = $_POST;
         // Verify nonce
-        if(isset($_POST['nonce']) && $this->verifyNonce($formName, $_POST['nonce'], $deleteNonce)) {
+        if(isset($data['nonce']) && $this->verifyNonce($formName, $data['nonce'], $deleteNonce)) {
             // Check parameters
             $verified = array();
             foreach($params as $param) {
-                if(!isset($_POST[$param])) {
+                if(!isset($data[$param])) {
                     return false;
                 }
-                $verified[$param] = $_POST[$param];
+                $verified[$param] = $data[$param];
             }
             return $verified;
         } else {
