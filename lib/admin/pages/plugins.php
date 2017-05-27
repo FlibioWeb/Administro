@@ -3,6 +3,7 @@
 </div>
 <div class='spacer'></div>
 <?php
+    $updateNonce = $administro->generateNonce('updateplugin');
     foreach($administro->plugins as $id => $plugin) {
         $info;
         if($plugin->hasOldInfo()) {
@@ -16,7 +17,7 @@
         $update = '';
         if(version_compare($info['latest']['version'], $info['version']) > 0) {
             $update = '<form action="' . $administro->baseDir . 'form/updateplugin" method="post">
-                <input type="hidden" name="nonce" value="' . $administro->generateNonce('updateplugin') . '">
+                <input type="hidden" name="nonce" value="' . $updateNonce . '">
                 <input type="hidden" name="plugin" value="' . $id . '">
                 <input class="button-secondary" type="submit" value="Update Now">
             </form>';
