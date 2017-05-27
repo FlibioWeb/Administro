@@ -123,8 +123,12 @@ class AdministroParsedown extends Parsedown {
 
         $newLink = $Element['attributes']['href'];
         if(strlen($newLink) >= 1 && substr($newLink, 0, 1) == ";") {
-            // Prepend the relative path
+            // Prepend the page file path
             $Element['attributes']['href'] = $this->administro->baseDir . 'file/' . $this->pageId . '/' . substr($newLink, 1);
+        }
+        if(strlen($newLink) >= 1 && substr($newLink, 0, 1) == ":") {
+            // Prepend the relative path
+            $Element['attributes']['href'] = $this->administro->baseDir . substr($newLink, 1);
         }
 
         return array(
