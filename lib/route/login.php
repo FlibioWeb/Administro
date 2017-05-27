@@ -15,7 +15,7 @@
             'template' => $administro->config['default-template'],
             'rawContent' => ''
         ),
-        '<form action="' . $administro->baseDir . 'form/login" method="post">' .
+        '<form action="' . $administro->baseDir . 'form/login" method="post" class="login-form">' .
         '<input type="hidden" name="nonce" value="' . $administro->generateNonce('login') . '">' .
         '<div><label>Username</label><input type="text" name="username"></div>' .
         '<div><label>Password</label><input type="password" name="password"></div>' .
