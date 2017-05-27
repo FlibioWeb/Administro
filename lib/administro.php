@@ -62,8 +62,6 @@ class Administro {
             require_once $this->rootDir . '/' . $this->reservedRoutes[$this->params[0]];
             call_user_func_array($this->params[0] . 'route', array($this));
         } else {
-            // Page load event
-            $this->callEvent('onLoadingPages');
             // Load all pages
             $this->loadPages();
             // Load the correct page
@@ -104,6 +102,8 @@ class Administro {
     }
 
     public function loadPages() {
+        // Page load event
+        $this->callEvent('onLoadingPages');
         // Create the array
         $this->pages = array();
         $this->hiddenPages = array();

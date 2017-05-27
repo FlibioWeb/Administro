@@ -6,6 +6,8 @@
             // User can't be logged in
             $administro->redirect('', 'bad/You are already logged in!');
         }
+        // Load pages for navigation
+        $administro->loadPages();
         // Render the login form
         $administro->renderPage(array(
             'id' => 'login',
