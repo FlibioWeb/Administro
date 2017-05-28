@@ -86,10 +86,6 @@
         if(isset($_POST['nonce'], $_POST['page']) && count($_FILES) == 1 && $administro->verifyNonce('uploadpagefile', $_POST['nonce']) &&
         $administro->hasPermission('admin.edit')) {
             $file = $administro->rootDir . 'pages/' . $_POST['page'] . '/files/' . basename($_FILES["file"]["name"]);
-            // Make sure file does not exist
-            if(file_exists($file)) {
-                $administro->redirect('admin/page/' . $_POST['page'], 'bad/Invalid parameters!');
-            }
             // Verify file size
             if ($_FILES["file"]["size"] > 10000000) {
                 $administro->redirect('admin/page/' . $_POST['page'], 'bad/File must be under 10MB!');
@@ -99,6 +95,28 @@
                 $administro->redirect('admin/page/' . $_POST['page'], 'good/File uploaded!');
             } else {
                 $administro->redirect('admin/page/' . $_POST['page'], 'bad/Failed to upload file!');
+            }
+        } else {
+            $administro->redirect('admin/pages', 'bad/Invalid parameters!');
+        }
+    }
+
+    function deletepagefileform($administro) {
+        $params = $administro->verifyParameters('deletepagefile', array('page', 'file'));
+        if($params !== false) {
+            $page = $params['page'];
+            // Verify permission
+            if($administro->hasPermission('admin.edit')) {
+                $file = $administro->rootDir . 'pages/' . $page . '/files/' . basename($params['file']);
+                // Check if file exists
+                if(!file_exists($file)) {
+                    $administro->redirect('admin/page/' . $page, 'bad/File does not exist!');
+                }
+                // Delete the file
+                unlink($file);
+                $administro->redirect('admin/page/' . $page, 'good/The file has been deleted!');
+            } else {
+                $administro->redirect('admin/page/' . $page, 'bad/Invalid permission!');
             }
         } else {
             $administro->redirect('admin/pages', 'bad/Invalid parameters!');

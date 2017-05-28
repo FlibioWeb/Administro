@@ -22,6 +22,7 @@ class Administro {
         'renderpage',
         'savepage',
         'uploadpagefile',
+        'deletepagefile',
         'updatecheck',
         'update',
         'updateplugin',
